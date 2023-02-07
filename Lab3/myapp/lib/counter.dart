@@ -1,8 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/src/animation/animation_controller.dart';
-import 'package:flutter/src/widgets/container.dart';
-import 'package:flutter/src/widgets/framework.dart';
-import 'package:flutter/src/widgets/ticker_provider.dart';
 
 class Counter extends StatefulWidget {
   const Counter({super.key});
