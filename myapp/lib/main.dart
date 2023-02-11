@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:myapp/Lab4/SimpleProfile.dart';
+import 'package:myapp/Lab4/app_interface.dart';
+
 import 'package:myapp/Layout.dart';
 import 'package:myapp/Layout2.dart';
 import 'package:myapp/Layout3.dart';
@@ -12,7 +15,7 @@ import 'input.dart';
 
 void main() {
   runApp(const MaterialApp(
-    home: Profile(),
-    debugShowCheckedModeBanner: false //ทำให้ Debug หายไปชั่วคราว,
-  ));
+      home: SimpleProfile(),
+      debugShowCheckedModeBanner: false //ทำให้ Debug หายไปชั่วคราว,
+      ));
 }
