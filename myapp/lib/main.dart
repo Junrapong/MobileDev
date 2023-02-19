@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:myapp/L1.dart';
+import 'package:myapp/Lab3/login.dart';
 import 'package:myapp/Lab4/SimpleProfile.dart';
 import 'package:myapp/Lab4/app_interface.dart';
 import 'package:myapp/first.dart';
@@ -18,7 +20,7 @@ import 'input.dart';
 
 void main() {
   runApp(const MaterialApp(
-      home: First(),
+      home: Login_(),
       debugShowCheckedModeBanner: false //ทำให้ Debug หายไปชั่วคราว,
       ));
 }
