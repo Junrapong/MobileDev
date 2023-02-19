@@ -97,8 +97,9 @@ class _LoginState extends State<Login_> {
               child: Container(
                 child: ElevatedButton(
                   style: ElevatedButton.styleFrom(
-                      maximumSize: const Size.fromHeight(50),
-                      textStyle: TextStyle(fontSize: 20)),
+                      maximumSize: const Size(100, 50),
+                      textStyle: TextStyle(fontSize: 20),
+                      fixedSize: Size(100, 50)),
                   onPressed: () {
                     if (user.text.isNotEmpty && pass.text.isNotEmpty) {
                       setState(() {

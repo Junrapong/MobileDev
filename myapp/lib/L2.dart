@@ -23,10 +23,14 @@ class _WelcomeState extends State<Welcome_> {
               margin: EdgeInsets.all(15),
               child: Text(
                 data,
-                style: TextStyle(fontSize: 20),
+                style: TextStyle(fontSize: 30),
               ),
             ),
             ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                    maximumSize: const Size(100, 50),
+                    textStyle: TextStyle(fontSize: 18),
+                    fixedSize: Size(100, 50)),
                 onPressed: () {
                   Navigator.pushReplacement(
                     context,
