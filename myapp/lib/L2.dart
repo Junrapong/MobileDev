@@ -39,7 +39,7 @@ class _WelcomeState extends State<Welcome_> {
                     MaterialPageRoute(builder: (context) => const Login_()),
                   );
                 },
-                child: Text('Sign out'))
+                child: const Text('Sign out'))
           ],
         ),
       ),
