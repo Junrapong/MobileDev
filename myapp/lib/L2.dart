@@ -28,9 +28,11 @@ class _WelcomeState extends State<Welcome_> {
             ),
             ElevatedButton(
                 style: ElevatedButton.styleFrom(
-                    maximumSize: const Size(100, 50),
-                    textStyle: TextStyle(fontSize: 18),
-                    fixedSize: Size(100, 50)),
+                  maximumSize: const Size(100, 50),
+                  textStyle: TextStyle(fontSize: 18),
+                  fixedSize: Size(100, 50),
+                  shape: StadiumBorder(),
+                ),
                 onPressed: () {
                   Navigator.pushReplacement(
                     context,
