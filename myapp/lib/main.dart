@@ -3,6 +3,7 @@ import 'package:myapp/L1.dart';
 import 'package:myapp/Lab3/login.dart';
 import 'package:myapp/Lab4/SimpleProfile.dart';
 import 'package:myapp/Lab4/app_interface.dart';
+import 'package:myapp/Lab5/login.dart';
 import 'package:myapp/first.dart';
 import 'package:myapp/page1.dart';
 
@@ -20,7 +21,7 @@ import 'input.dart';
 
 void main() {
   runApp(const MaterialApp(
-      home: Login_(),
+      home: Login(),
       debugShowCheckedModeBanner: false //ทำให้ Debug หายไปชั่วคราว,
       ));
 }
