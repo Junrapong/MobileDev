@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 
-class Login extends StatefulWidget {
-  const Login({super.key});
+class Login1 extends StatefulWidget {
+  const Login1({super.key});
 
   @override
-  State<Login> createState() => _LoginState();
+  State<Login1> createState() => _LoginState();
 }
 
 var account = [
@@ -24,7 +24,7 @@ check(String username, String password) {
   }
 }
 
-class _LoginState extends State<Login> {
+class _LoginState extends State<Login1> {
   bool _obscureText = true;
   String username = '';
   String password = '';
