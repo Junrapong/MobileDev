@@ -1,27 +1,17 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:myapp/L1.dart';
-import 'package:myapp/Lab3/login.dart';
-import 'package:myapp/Lab4/SimpleProfile.dart';
-import 'package:myapp/Lab4/app_interface.dart';
-import 'package:myapp/Lab5/login.dart';
-import 'package:myapp/first.dart';
-import 'package:myapp/page1.dart';
-
-import 'package:myapp/Layout.dart';
-import 'package:myapp/Layout2.dart';
-import 'package:myapp/Layout3.dart';
-import 'package:myapp/Quiz1_6431501013.dart';
-
-import 'package:myapp/counter.dart';
-import 'package:myapp/page2.dart';
-
-import 'package:myapp/profile.dart';
+import 'package:myapp/provider/count.dart';
+import 'package:myapp/provider/counter.dart';
+import 'package:provider/provider.dart';
 
 import 'input.dart';
 
 void main() {
-  runApp(const MaterialApp(
-      home: Login(),
-      debugShowCheckedModeBanner: false //ทำให้ Debug หายไปชั่วคราว,
-      ));
+  runApp(ChangeNotifierProvider(
+    create: (context) => Count(),
+    child: const MaterialApp(
+        home: Counter(),
+        debugShowCheckedModeBanner: false //ทำให้ Debug หายไปชั่วคราว,
+        ),
+  ));
 }
