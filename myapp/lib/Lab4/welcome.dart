@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:myapp/Lab5/login.dart';
+
+
+import 'login.dart';
 
 class Welcome extends StatefulWidget {
   const Welcome({super.key});
