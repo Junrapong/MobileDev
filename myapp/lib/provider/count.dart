@@ -5,7 +5,11 @@ class Count with ChangeNotifier {
 
   void add() {
     value++;
-    notifyListeners(); //บอกตัวอื่นว่าเปลี่ยนแปลงค่า 
+    notifyListeners(); //บอกตัวอื่นว่าเปลี่ยนแปลงค่า
+  }
 
+  void drop() {
+    value--;
+    notifyListeners();
   }
 }

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:myapp/provider/count.dart';
+import 'package:myapp/provider/counter2.dart';
 import 'package:provider/provider.dart';
 
 // class Counter extends StatefulWidget {
@@ -46,11 +47,29 @@ class Counter extends StatelessWidget {
         child: Text(
             'count = ${context.watch<Count>().value}'), //ดูค่าและเปลี่ยนแปลงแบบ real time
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          context.read<Count>().add(); //ดูสถานะของ count
-        },
-        child: const Icon(Icons.add),
+      floatingActionButton: Column(
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: [
+          FloatingActionButton(
+            onPressed: () {
+              //add count
+              context.read<Count>().add(); //ดูสถานะของ count
+            },
+            child: const Icon(Icons.add),
+          ),
+          const SizedBox(
+            height: 10,
+          ),
+          FloatingActionButton(
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const Counter2()),
+              );
+            },
+            child: const Icon(Icons.skip_next),
+          )
+        ],
       ),
     );
   }
