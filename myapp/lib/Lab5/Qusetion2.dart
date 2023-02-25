@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:myapp/Lab5/Check.dart';
 import 'package:myapp/Lab5/Summary.dart';
@@ -6,8 +8,8 @@ import 'package:provider/provider.dart';
 TextEditingController q2 = TextEditingController();
 String ans2 = '';
 
-class Question2 extends StatelessWidget {
-  const Question2({super.key});
+class Q2 extends StatelessWidget {
+  const Q2({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -22,13 +24,16 @@ class Question2 extends StatelessWidget {
             child: Column(
               children: [
                 const Text(
-                  'What is the color banana?',
+                  'What is the color of banana?',
                   style: TextStyle(
-                      fontSize: 18,
-                      fontStyle: FontStyle.italic,
-                      fontWeight: FontWeight.bold),
+                    fontSize: 18,
+                    fontStyle: FontStyle.italic,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
-                const SizedBox(height: 10),
+                const SizedBox(
+                  height: 10,
+                ),
                 TextFormField(
                   controller: q2,
                   decoration: InputDecoration(
@@ -49,7 +54,7 @@ class Question2 extends StatelessWidget {
                     onPressed: () {
                       var y = ['yello', 'Yello'];
                       ans2 = q2.text;
-                      for (int i = 0; i < y[i].length; i++) {
+                      for (var i = 0; i < y.length; i++) {
                         if (ans2 == y[0]) {
                           context.read<Check>().add(0);
                         } else if (ans2 == y[1]) {
@@ -59,13 +64,17 @@ class Question2 extends StatelessWidget {
                         }
                         break;
                       }
-                      Navigator.pushReplacement(context,
-                          MaterialPageRoute(builder: (context) => const Sum()));
+
+                      Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const Summary()),
+                      );
                       q2.clear();
                     },
                     child: const Text('OK'),
                   ),
-                )
+                ),
               ],
             ),
           ),

@@ -3,8 +3,8 @@ import 'package:myapp/Lab5/Check.dart';
 import 'package:myapp/Lab5/Question1.dart';
 import 'package:provider/provider.dart';
 
-class Sum extends StatelessWidget {
-  const Sum({super.key});
+class Summary extends StatelessWidget {
+  const Summary({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -19,27 +19,27 @@ class Sum extends StatelessWidget {
             child: Column(
               children: [
                 Text(
-                  'Total score = ${context.watch<Check>().ans.length}',
+                  'Total score = ${context.watch<Check>().ans.length} ',
                   style: const TextStyle(fontSize: 18),
                 ),
-                const SizedBox(height: 10),
+                const SizedBox(
+                  height: 10,
+                ),
                 ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    maximumSize: const Size(100, 50),
-                    textStyle: const TextStyle(fontSize: 20),
-                    fixedSize: const Size(100, 50),
-                    shape: const StadiumBorder(),
-                  ),
-                  onPressed: () {
-                    context.read<Check>().clear();
-                    Navigator.pushAndRemoveUntil(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => const Question1()),
-                        (route) => false);
-                  },
-                  child: const Text('Reset'),
-                )
+                    style: ElevatedButton.styleFrom(
+                      maximumSize: const Size(100, 50),
+                      textStyle: const TextStyle(fontSize: 20),
+                      fixedSize: const Size(100, 50),
+                      shape: const StadiumBorder(),
+                    ),
+                    onPressed: () {
+                      context.read<Check>().clear();
+                      Navigator.pushAndRemoveUntil(
+                          context,
+                          MaterialPageRoute(builder: (context) => const Q1()),
+                          (route) => false);
+                    },
+                    child: const Text('Restart'))
               ],
             ),
           ),

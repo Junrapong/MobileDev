@@ -6,8 +6,8 @@ import 'package:provider/provider.dart';
 TextEditingController q1 = TextEditingController();
 String ans1 = '';
 
-class Question1 extends StatelessWidget {
-  const Question1({super.key});
+class Q1 extends StatelessWidget {
+  const Q1({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -24,13 +24,15 @@ class Question1 extends StatelessWidget {
                 const Text(
                   'What is this year?',
                   style: TextStyle(
-                      fontSize: 18,
-                      fontStyle: FontStyle.italic,
-                      fontWeight: FontWeight.bold),
+                    fontSize: 18,
+                    fontStyle: FontStyle.italic,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
-                const SizedBox(height: 10),
+                const SizedBox(
+                  height: 10,
+                ),
                 TextFormField(
-                  //textInputAction: TextInputAction.go,
                   controller: q1,
                   decoration: InputDecoration(
                     hintText: 'answer',
@@ -52,16 +54,15 @@ class Question1 extends StatelessWidget {
                       if (ans1 == '2023') {
                         context.read<Check>().add(0);
                       }
-
                       Navigator.pushReplacement(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => const Question2()));
+                        context,
+                        MaterialPageRoute(builder: (context) => const Q2()),
+                      );
                       q1.clear();
                     },
                     child: const Text('OK'),
                   ),
-                )
+                ),
               ],
             ),
           ),
