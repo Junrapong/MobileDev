@@ -29,9 +29,7 @@ class Q1 extends StatelessWidget {
                     fontWeight: FontWeight.bold,
                   ),
                 ),
-                const SizedBox(
-                  height: 10,
-                ),
+                const SizedBox(height: 10),
                 TextFormField(
                   controller: q1,
                   decoration: InputDecoration(

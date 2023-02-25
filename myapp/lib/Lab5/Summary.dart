@@ -22,9 +22,7 @@ class Summary extends StatelessWidget {
                   'Total score = ${context.watch<Check>().ans.length} ',
                   style: const TextStyle(fontSize: 18),
                 ),
-                const SizedBox(
-                  height: 10,
-                ),
+                const SizedBox(height: 10),
                 ElevatedButton(
                     style: ElevatedButton.styleFrom(
                       maximumSize: const Size(100, 50),
