@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "71694732869",
+    "project_id": "borrow-app-2023",
+    "storage_bucket": "borrow-app-2023.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:71694732869:android:2a6ee817499dd5a0261d2c",
+        "android_client_info": {
+          "package_name": "com.example.borrow_app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "71694732869-91g5qjr4q1oubeekohnl76usd7v5hjuh.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBiY4bFX9Imb684W52i-e7c3QWlR5tR-PM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "71694732869-91g5qjr4q1oubeekohnl76usd7v5hjuh.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
