@@ -15,7 +15,7 @@ class CheckUser extends StatelessWidget {
         stream: FirebaseAuth.instance.authStateChanges(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return const CircularProgressIndicator();
+            return const Center(child: CircularProgressIndicator());
           }
           final User? user = snapshot.data;
           if (snapshot.hasData) {
@@ -26,7 +26,7 @@ class CheckUser extends StatelessWidget {
               stream: users.doc(user!.uid).snapshots(),
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
-                  return const CircularProgressIndicator();
+                  return const Center(child: CircularProgressIndicator());
                 }
                 final DocumentSnapshot document = snapshot.data!;
                 final String role = document.get('role');
