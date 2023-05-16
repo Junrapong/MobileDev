@@ -1,6 +1,7 @@
 import 'package:borrow_app/screen/ForgotPass.dart';
 import 'package:borrow_app/screen/HomeBar.dart';
 import 'package:borrow_app/screen/RegisterPage.dart';
+import 'package:borrow_app/screen/admin_page.dart';
 import 'package:borrow_app/screen/cart.dart';
 import 'package:borrow_app/widget/auth_service.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -36,7 +37,7 @@ class _LoginState extends State<Login> {
           Navigator.pushReplacement(
             context,
             MaterialPageRoute(
-              builder: (context) => const Cart(),
+              builder: (context) => const AdminPage(),
             ),
           );
         } else {
