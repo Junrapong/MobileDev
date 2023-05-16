@@ -18,13 +18,41 @@ class ItemDetails extends StatelessWidget {
   //_reference.snapshots() --> Stream<DocumentSnapshot>
   late Future<DocumentSnapshot> _futureData;
   late Map data;
-  int count = 0;
 
   final FirebaseAuth _auth = FirebaseAuth.instance;
+
   Future addBorrow(String start, String end, String productName,
-      String productImage, int day) async {
+      String productImage, int day, BuildContext context) async {
     final User? user = _auth.currentUser;
     final uid = user!.uid;
+
+    final QuerySnapshot querySnapshot = await FirebaseFirestore.instance
+        .collection('user')
+        .doc(uid)
+        .collection('Pending')
+        .get();
+    if (querySnapshot.size >= 3) {
+      // User has already selected 3 products, show an error message or handle accordingly
+      showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: const Text('Product Limit Exceeded'),
+            content: const Text('You can select up to 3 products.'),
+            actions: <Widget>[
+              TextButton(
+                child: const Text('OK'),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+            ],
+          );
+        },
+      );
+      return;
+    }
+
     await FirebaseFirestore.instance
         .collection('user')
         .doc(uid)
@@ -130,7 +158,7 @@ class ItemDetails extends StatelessWidget {
                         child: InkWell(
                           onTap: () {
                             addBorrow('start', 'end', data['products_name'],
-                                data['image'], 7);
+                                data['image'], 7, context);
                             print('add');
                             Navigator.pop(context);
                           },
