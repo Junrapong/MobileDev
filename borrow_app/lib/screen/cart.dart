@@ -2,8 +2,12 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
+import '../widget/picker_date.dart';
+
 class Cart extends StatefulWidget {
-  const Cart({super.key});
+  final String productName;
+  final String productImage;
+  const Cart({Key? key, required this.productName, required this.productImage});
 
   @override
   State<Cart> createState() => _CartState();
@@ -77,7 +81,7 @@ class _CartState extends State<Cart> {
                                   .collection('user')
                                   .doc(FirebaseAuth.instance.currentUser!.uid)
                                   .collection('Pending')
-                                  .doc(snap[index]['name'])
+                                  .doc(snap[index].id)
                                   .delete();
                             },
                             icon: const Icon(Icons.delete),
@@ -88,30 +92,10 @@ class _CartState extends State<Cart> {
                   },
                 ),
               ),
-              const Divider(color: Colors.grey, thickness: 1),
-              SizedBox(
-                width: double.infinity,
-                child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      primary: Colors.black,
-                      onPrimary: Colors.amber,
-                    ),
-                    onPressed: () {
-                      // Navigator.push(
-                      //   context,
-                      //   MaterialPageRoute(
-                      //     builder: (context) => (
-
-                      //     ),
-                      //   ),
-                      // );
-                    },
-                    child: const Text('Confirm'),
-                  ),
-                ),
-              ),
+              DatePickerPage(
+                productName: widget.productName,
+                productImage: widget.productImage,
+              )
             ],
           );
         },

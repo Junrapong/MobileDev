@@ -32,7 +32,7 @@ class CheckUser extends StatelessWidget {
                 final String role = document.get('role');
                 if (role == 'Admin') {
                   // User is an admin
-                  return const AdminPage();
+                  return AdminPage();
                 } else {
                   // User is a regular user
                   return const HomeBar();

@@ -109,7 +109,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
               Text('Phone: $phone'),
               Text('School: $school'),
               Text('Email: ${FirebaseAuth.instance.currentUser!.email}'),
-
+              const SizedBox(
+                height: 10,
+              ),
               // FirebaseAuth.instance.currentUser!.displayName == null
               //     ? const Text('Waiting...')
               //     : Text('${FirebaseAuth.instance.currentUser!.displayName}'),
@@ -124,9 +126,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                     imgurl: '$profileurl',
                                   )));
                     },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.black,
+                      side: BorderSide.none,
+                      shape: const StadiumBorder(),
+                    ),
                     child: const Text(
                       tEditProfile,
-                      style: TextStyle(color: Colors.black),
+                      style: TextStyle(color: Colors.amber),
                     ),
                   )),
               const SizedBox(

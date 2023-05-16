@@ -7,7 +7,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import '../model/utils.dart';
 import '../widget/auth_service.dart';
-import '../widget/school.dart';
+import '../model/school.dart';
 import '../widget/signup_controller.dart';
 import '../widget/validator.dart';
 
@@ -65,6 +65,8 @@ class _RegisterState extends State<Register> {
       "Phone": controller.phoneNumber.text,
       "Password": controller.password.text,
       "role": 'Student',
+      'ProfileImageUrl':
+          'https://www.friendlysoftpro.com/upload/content/friendlyso_1445845956.png',
     };
     // final FirebaseAuth _auth = FirebaseAuth.instance;
     // final User? user = _auth.currentUser;

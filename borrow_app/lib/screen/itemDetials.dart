@@ -21,8 +21,8 @@ class ItemDetails extends StatelessWidget {
 
   final FirebaseAuth _auth = FirebaseAuth.instance;
 
-  Future addBorrow(String start, String end, String productName,
-      String productImage, int day, BuildContext context) async {
+  Future addBorrow(
+      String productName, String productImage, BuildContext context) async {
     final User? user = _auth.currentUser;
     final uid = user!.uid;
 
@@ -59,11 +59,8 @@ class ItemDetails extends StatelessWidget {
         .collection('Pending')
         .doc(productName)
         .set({
-      'date_start': start,
-      'date_end': end,
       'name': productName,
       'image': productImage,
-      'day': day,
       'status': 'pending',
     });
   }
@@ -74,23 +71,23 @@ class ItemDetails extends StatelessWidget {
       appBar: AppBar(
         title: const Text('Item details'),
         backgroundColor: const Color.fromARGB(255, 57, 72, 103),
-        actions: [
-          IconButton(
-              onPressed: () {
-                // //add the id to the map
-                // data['id'] = itemId;
+        // actions: [
+        //   IconButton(
+        //       onPressed: () {
+        //         // //add the id to the map
+        //         // data['id'] = itemId;
 
-                // Navigator.of(context).push(
-                //     MaterialPageRoute(builder: (context) => EditItem(data)));
-              },
-              icon: const Icon(Icons.edit)),
-          IconButton(
-              onPressed: () {
-                //Delete the item
-                _reference.delete();
-              },
-              icon: const Icon(Icons.delete))
-        ],
+        //         // Navigator.of(context).push(
+        //         //     MaterialPageRoute(builder: (context) => EditItem(data)));
+        //       },
+        //       icon: const Icon(Icons.edit)),
+        //   IconButton(
+        //       onPressed: () {
+        //         //Delete the item
+        //         _reference.delete();
+        //       },
+        //       icon: const Icon(Icons.delete))
+        // ],
       ),
       body: FutureBuilder<DocumentSnapshot>(
         future: _futureData,
@@ -157,17 +154,17 @@ class ItemDetails extends StatelessWidget {
                       Center(
                         child: InkWell(
                           onTap: () {
-                            addBorrow('start', 'end', data['products_name'],
-                                data['image'], 7, context);
+                            addBorrow(
+                                data['products_name'], data['image'], context);
                             print('add');
                             Navigator.pop(context);
                           },
                           child: Container(
-                            decoration: new BoxDecoration(
-                              gradient: new LinearGradient(
+                            decoration: const BoxDecoration(
+                              gradient: LinearGradient(
                                   colors: [Colors.pink, Colors.lightBlue],
-                                  begin: const FractionalOffset(0.0, 0.0),
-                                  end: const FractionalOffset(1.0, 0.0),
+                                  begin: FractionalOffset(0.0, 0.0),
+                                  end: FractionalOffset(1.0, 0.0),
                                   stops: [0.0, 1.0],
                                   tileMode: TileMode.mirror),
                             ),

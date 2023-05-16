@@ -17,7 +17,10 @@ class _HomeBarState extends State<HomeBar> {
   int currentIndex = 0;
   final List<Widget> screens = [
     const Dashboard(),
-    const Cart(),
+    const Cart(
+      productImage: '',
+      productName: '',
+    ),
     const History(),
     ProfileScreen(),
   ];

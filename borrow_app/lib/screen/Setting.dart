@@ -69,20 +69,20 @@ class _SettingState extends State<Setting> {
                       });
                     },
                   ),
-                  ListTile(
-                    title: const Text("Change Password"),
-                    leading: const Icon(Icons.lock),
-                    trailing: const Icon(Icons.chevron_right),
-                    onTap: () {
-                      setState(() {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => const ChangePassword()),
-                        );
-                      });
-                    },
-                  ),
+                  // ListTile(
+                  //   title: const Text("Change Password"),
+                  //   leading: const Icon(Icons.lock),
+                  //   trailing: const Icon(Icons.chevron_right),
+                  //   onTap: () {
+                  //     setState(() {
+                  //       Navigator.push(
+                  //         context,
+                  //         MaterialPageRoute(
+                  //             builder: (context) => const ChangePassword()),
+                  //       );
+                  //     });
+                  //   },
+                  // ),
                   // ListTile(
                   //   title: const Text("Notification"),
                   //   leading: const Icon(Icons.notifications),

@@ -116,12 +116,12 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
                       height: 35,
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(100),
-                        color: Colors.yellow,
+                        color: Colors.black,
                       ),
                       child: IconButton(
                         icon: const Icon(
                           LineAwesomeIcons.camera,
-                          color: Colors.black,
+                          color: Colors.amber,
                           size: 20,
                         ),
                         onPressed: () {
@@ -178,13 +178,13 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
                           }
                         },
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.yellow,
+                          backgroundColor: Colors.black,
                           side: BorderSide.none,
                           shape: const StadiumBorder(),
                         ),
                         child: const Text(
                           'Save Profile',
-                          style: TextStyle(color: Colors.black),
+                          style: TextStyle(color: Colors.amber),
                         ),
                       ),
                     ),
