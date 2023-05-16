@@ -30,6 +30,47 @@ class _AdminPageState extends State<AdminPage> {
   //   });
   // }
 
+  Future updateData(String productName, String status) async {
+    final productQuery = FirebaseFirestore.instance
+        .collection('products')
+        .where('products_name', isEqualTo: productName);
+    final querySnapshot = await productQuery.get();
+    final documentSnapshot = querySnapshot.docs.first;
+    final documentId = documentSnapshot.id;
+
+    final documentReference =
+        FirebaseFirestore.instance.collection('products').doc(documentId);
+
+    documentReference.update(
+      {'status': status},
+    );
+  }
+
+  Future updateUserData(String productName, String status, String _uid) async {
+    FirebaseFirestore.instance
+        .collection('user')
+        .doc(_uid)
+        .collection('Pending')
+        .doc(productName)
+        .update(
+      {'status': status},
+    );
+  }
+
+  Future addData(String start, String end, String productName,
+      String productImage, day, String _uid, String _email) async {
+    FirebaseFirestore.instance.collection('Borrow').doc(productName).set(
+      {
+        'date_start': start,
+        'date_end': end,
+        'name': productName,
+        'image': productImage,
+        'day': day,
+        'status': 'pending',
+      },
+    );
+  }
+
   String? name;
   String? email;
   // String? phone;
@@ -77,9 +118,9 @@ class _AdminPageState extends State<AdminPage> {
                     .collection("UserRequest")
                     .snapshots(),
                 builder: (context, snapshot) {
-                  if (snapshot.hasData) {
-                    return CircularProgressIndicator();
-                  }
+                  // if (snapshot.connectionState == ConnectionState.waiting) {
+                  //   return const Center(child: CircularProgressIndicator());
+                  // }
                   List<DocumentSnapshot> snap = snapshot.data!.docs;
                   return ListView.builder(
                       itemCount: snap.length,
@@ -96,18 +137,71 @@ class _AdminPageState extends State<AdminPage> {
                                 ),
                                 const SizedBox(width: 16.0),
                                 Expanded(
-                                    child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      snap[index]['name'],
-                                      style: const TextStyle(fontSize: 15),
-                                      softWrap: false,
-                                      maxLines: 2,
-                                      overflow: TextOverflow.visible, // new
-                                    ),
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        snap[index]['name'],
+                                        style: const TextStyle(fontSize: 15),
+                                        softWrap: false,
+                                        maxLines: 2,
+                                        overflow: TextOverflow.visible, // new
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                Column(
+                                  children: <Widget>[
+                                    ElevatedButton(
+                                        onPressed: () {
+                                          showDialog(
+                                            context: context,
+                                            builder: (BuildContext context) {
+                                              return AlertDialog(
+                                                title: Text('Confirm Accept'),
+                                                actions: <Widget>[
+                                                  ElevatedButton(
+                                                      onPressed: () {
+                                                        Navigator.pop(context);
+                                                        updateData(
+                                                            snap[index]['name'],
+                                                            'borrowing');
+                                                        updateUserData(
+                                                          snap[index]['name'],
+                                                          'borrowing',
+                                                          snap[index]['userId'],
+                                                        );
+
+                                                        FirebaseFirestore
+                                                            .instance
+                                                            .collection(
+                                                                'UserRequest')
+                                                            .doc(snap[index].id)
+                                                            .delete();
+
+                                                        addData(
+                                                          snap[index]
+                                                              ['date_start'],
+                                                          snap[index]
+                                                              ['date_end'],
+                                                          snap[index]['name'],
+                                                          snap[index]['image'],
+                                                          snap[index]['day'],
+                                                          snap[index]['userId'],
+                                                          snap[index]
+                                                              ['userEmail'],
+                                                        );
+                                                      },
+                                                      child: Text('data'))
+                                                ],
+                                              );
+                                            },
+                                          );
+                                        },
+                                        child: Text('data'))
                                   ],
-                                ))
+                                )
                               ],
                             ),
                           ),

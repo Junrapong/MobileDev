@@ -42,9 +42,11 @@ class _AdminDemoState extends State<AdminDemo> {
       backgroundColor: Colors.grey,
       appBar: AppBar(
         backgroundColor: Colors.black,
-        title: const Text(
-          "Request                      Borrowing",
-          style: TextStyle(color: Colors.amber),
+        title: const Center(
+          child: Text(
+            "Request & Brrowing",
+            style: TextStyle(color: Colors.amber),
+          ),
         ),
         leading: Builder(
           builder: (context) {

@@ -1,9 +1,12 @@
+import 'package:borrow_app/adminDemo/admin_demo.dart';
 import 'package:borrow_app/screen/HomeBar.dart';
 import 'package:borrow_app/screen/LoginPage.dart';
 import 'package:borrow_app/screen/admin_page.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+
+import '../adminDemo/admin_demo.dart';
 
 class CheckUser extends StatelessWidget {
   const CheckUser({super.key});
@@ -32,7 +35,7 @@ class CheckUser extends StatelessWidget {
                 final String role = document.get('role');
                 if (role == 'Admin') {
                   // User is an admin
-                  return AdminPage();
+                  return const AdminPage();
                 } else {
                   // User is a regular user
                   return const HomeBar();
