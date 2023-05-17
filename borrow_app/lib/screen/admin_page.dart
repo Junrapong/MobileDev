@@ -135,8 +135,6 @@ class _AdminPageState extends State<AdminPage> {
             StreamBuilder<QuerySnapshot>(
               stream: FirebaseFirestore.instance
                   .collection("UserRequest")
-                  .doc(FirebaseAuth.instance.currentUser!.uid)
-                  .collection('Item')
                   .snapshots(),
               builder: (BuildContext context,
                   AsyncSnapshot<QuerySnapshot> snapshot) {
@@ -156,8 +154,9 @@ class _AdminPageState extends State<AdminPage> {
                 }
 
                 List<DocumentSnapshot> snap = snapshot.data!.docs;
+                print(snap);
                 //Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
-                List<QueryDocumentSnapshot> documents = snapshot.data!.docs;
+                
 
                 // for (QueryDocumentSnapshot document in documents) {
                 //   // Access the subcollections within each document

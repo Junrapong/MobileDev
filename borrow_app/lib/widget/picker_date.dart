@@ -53,6 +53,7 @@ class _DatePickerPageState extends State<DatePickerPage> {
       (DocumentSnapshot doc) async {
         Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
 
+        //print(data);
         // สร้างเอกสารใน collection "UserRequest" และเก็บข้อมูลภายในเอกสารด้วย .set()
 
         await FirebaseFirestore.instance
@@ -149,6 +150,7 @@ class _DatePickerPageState extends State<DatePickerPage> {
     final start = dateRange.start;
     final end = dateRange.end;
     final diff = dateRange.duration;
+
     return Padding(
       padding: const EdgeInsets.all(16.0),
       child: Column(
