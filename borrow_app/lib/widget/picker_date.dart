@@ -61,9 +61,12 @@ class _DatePickerPageState extends State<DatePickerPage> {
             .doc(FirebaseAuth.instance.currentUser!.uid)
             .collection('Item')
             .doc(data['name'])
-            .set({
-          'data': data,
-        });
+            .set(
+          {
+            'name': data['name'],
+            'image': data['image'],
+          },
+        );
         await FirebaseFirestore.instance
             .collection('UserRequest')
             .doc(FirebaseAuth.instance.currentUser!.uid)
