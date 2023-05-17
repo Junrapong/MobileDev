@@ -89,34 +89,29 @@ class _AdminPageState extends State<AdminPage> {
 
   String? name;
   String? email;
-  // String? phone;
-  // String? school;
-  // String? studentid;
-  // String? profileurl;
-// get user info
+
   Future<void> getData() async {
-  try {
-    final DocumentSnapshot snapshot = await FirebaseFirestore.instance
-        .collection('user')
-        .doc(FirebaseAuth.instance.currentUser!.uid)
-        .get();
+    try {
+      final DocumentSnapshot snapshot = await FirebaseFirestore.instance
+          .collection('user')
+          .doc(FirebaseAuth.instance.currentUser!.uid)
+          .get();
 
-    if (snapshot.exists) {
-      final data = snapshot.data() as Map<String, dynamic>;
-      setState(() {
-        email = data['Email'];
-        name = data['FullName'];
-        // phone = data[“Phone”];
-        // school = data[“school”];
-        // studentid = data[“studentId”];
-        // profileurl = data[“ProfileImageUrl”];
-      });
+      if (snapshot.exists) {
+        final data = snapshot.data() as Map<String, dynamic>;
+        setState(() {
+          email = data['Email'];
+          name = data['FullName'];
+          // phone = data[“Phone”];
+          // school = data[“school”];
+          // studentid = data[“studentId”];
+          // profileurl = data[“ProfileImageUrl”];
+        });
+      }
+    } catch (e) {
+      print('Error: $e');
     }
-  } catch (e) {
-
-    print('Error: $e');
   }
-}
 
   @override
   void initState() {
@@ -157,7 +152,6 @@ class _AdminPageState extends State<AdminPage> {
                 List<DocumentSnapshot> snap = snapshot.data!.docs;
                 print(snap);
                 //Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
-
 
                 // for (QueryDocumentSnapshot document in documents) {
                 //   // Access the subcollections within each document
