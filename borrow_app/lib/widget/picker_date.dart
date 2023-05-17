@@ -72,6 +72,7 @@ class _DatePickerPageState extends State<DatePickerPage> {
             .doc(FirebaseAuth.instance.currentUser!.uid)
             .set(
           {
+            'email': FirebaseAuth.instance.currentUser!.email,
             'start': start,
             'end': end,
             'diff': diff,

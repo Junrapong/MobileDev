@@ -361,6 +361,7 @@
 //   //   );
 //   // }
 
+import 'package:borrow_app/model/school.dart';
 import 'package:borrow_app/widget/auth_service.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -396,18 +397,15 @@ class _AdminPageState extends State<AdminPage> {
     }
   }
 
-  Future<void> getItem() async {
+  Future<void> getItem(String id) async {
     //final uid = FirebaseFirestore.instance.collection('UserRequest').id;
     try {
       final QuerySnapshot mainCollectionSnapshot =
           await FirebaseFirestore.instance.collectionGroup('UserRequest').get();
 
-      for (QueryDocumentSnapshot mainDocument in mainCollectionSnapshot.docs) {
-        print('Main-Collection Doc ID: ${mainDocument.id}');
-      }
       final QuerySnapshot subCollectionSnapshot = await FirebaseFirestore
           .instance
-          .collection('UserRequest/5t8Egc9urAWv2506aXbInKdPrab2/Item')
+          .collection('UserRequest/${id}/Item')
           .get();
 
       for (QueryDocumentSnapshot subDocument in subCollectionSnapshot.docs) {
@@ -430,7 +428,7 @@ class _AdminPageState extends State<AdminPage> {
   @override
   void initState() {
     getData();
-    getItem();
+
     super.initState();
   }
 
@@ -438,97 +436,107 @@ class _AdminPageState extends State<AdminPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.amber[700], // Set the background color to amber
-        title: const Text('Admin Page'),
+        backgroundColor: Colors.black, // Set the background color to amber
+        title: const Text(
+          'Admin Page',
+          style: TextStyle(color: Colors.amber),
+        ),
       ),
       body: StreamBuilder<QuerySnapshot>(
-          stream:
-              FirebaseFirestore.instance.collection('UserRequest').snapshots(),
-          builder: (context, snapshot) {
-            List<DocumentSnapshot> snap = snapshot.data!.docs;
-            return Column(
-              children: [
-                SizedBox(
-                  height: 300,
-                  child: ListView.builder(
-                    itemCount: snap.length,
-                    itemBuilder: (context, index) {
-                      final DocumentSnapshot document = snap[index];
-                      //getItem();
-                      return Card(
-                        child: Row(
+        stream:
+            FirebaseFirestore.instance.collection('UserRequest').snapshots(),
+        builder: (context, snapshot) {
+          if (!snapshot.hasData) {
+            return const Center(child: CircularProgressIndicator());
+          }
+          List<DocumentSnapshot> snap = snapshot.data!.docs;
+          return Column(
+            children: [
+              Expanded(
+                child: ListView.builder(
+                  itemCount: snap.length,
+                  itemBuilder: (context, index) {
+                    final DocumentSnapshot document = snap[index];
+
+                    return SizedBox(
+                      height: 150,
+                      child: Card(
+                        elevation: 3,
+                        margin: const EdgeInsets.all(5),
+                        child: Column(
                           children: [
                             // Image.network(
-                            //   snap[index]['image'],
+                            //   items[index]['image'],
                             //   height: 80,
                             //   width: 80,
                             // ),
                             // const SizedBox(width: 16.0),
-                            // Expanded(
-                            //   child: Text(
-                            //     snap[index]['name'],
-                            //     style: const TextStyle(fontSize: 15),
-                            //     softWrap: false,
-                            //     maxLines: 2,
-                            //     overflow: TextOverflow.visible, // new
-                            //   ),
-                            // ),
-
+                            Padding(
+                              padding: const EdgeInsets.all(5.0),
+                              child: Text(
+                                snap[index]['email'],
+                                style: const TextStyle(fontSize: 15),
+                                softWrap: false,
+                                maxLines: 2,
+                                overflow: TextOverflow.visible, // new
+                              ),
+                            ),
+                            Text(
+                              'Borrow for: ${snap[index]['diff']} days',
+                            ),
+                            Text(
+                              'Start: ${snap[index]['start']}',
+                            ),
+                            Text(
+                              'End: ${snap[index]['end']}',
+                            ),
                             const Spacer(),
-                            // IconButton(
-                            //   onPressed: () {
-                            //     FirebaseFirestore.instance
-                            //         .collection('user')
-                            //         .doc(FirebaseAuth.instance.currentUser!.uid)
-                            //         .collection('Pending')
-                            //         .doc(items[index].id)
-                            //         .delete();
-                            //   },
-                            //   icon: const Icon(Icons.delete),
-                            // )
+
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: ElevatedButton(
+                                  style: ElevatedButton.styleFrom(
+                                    primary: Colors.black,
+                                    onPrimary: Colors.amber,
+                                  ),
+                                  onPressed: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => DetialRequest(
+                                          id: document.id,
+                                        ),
+                                      ),
+                                    );
+                                  },
+                                  child: const Text('See more')),
+                            ),
                           ],
                         ),
-                      );
-                    },
-
-                    // children: items.map((QueryDocumentSnapshot item) {
-                    //   final data = item.data() as Map<String, dynamic>?;
-
-                    //   if (data != null) {
-                    //     final name = data['name'] as String?;
-                    //     return ListTile(
-                    //       title: Text(name ?? 'No name'),
-                    //     );
-                    //   }
-
-                    //   return const ListTile(
-                    //     title: Text('Invalid data'),
-                    //   );
-                    // }).toList(),
-                  ),
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: ElevatedButton(
-                        onPressed: () {},
-                        child: Text('data'),
                       ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: ElevatedButton(
-                        onPressed: () {},
-                        child: Text('data'),
-                      ),
-                    ),
-                  ],
+                    );
+                  },
+
+                  // children: items.map((QueryDocumentSnapshot item) {
+                  //   final data = item.data() as Map<String, dynamic>?;
+
+                  //   if (data != null) {
+                  //     final name = data['name'] as String?;
+                  //     return ListTile(
+                  //       title: Text(name ?? 'No name'),
+                  //     );
+                  //   }
+
+                  //   return const ListTile(
+                  //     title: Text('Invalid data'),
+                  //   );
+                  // }).toList(),
                 ),
-              ],
-            );
-          }),
+              ),
+            ],
+          );
+        },
+      ),
       drawer: Drawer(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -581,11 +589,124 @@ class _AdminPageState extends State<AdminPage> {
                 onPressed: () {
                   AuthService().signOut();
                 },
-                child: const Text('Sign Out'),
+                child: const Text('LOGOUT'),
               ),
             ),
           ],
         ),
+      ),
+    );
+  }
+}
+
+class DetialRequest extends StatefulWidget {
+  final String id;
+  DetialRequest({super.key, required this.id});
+
+  @override
+  State<DetialRequest> createState() => _DetialRequestState();
+}
+
+class _DetialRequestState extends State<DetialRequest> {
+  Future<void> getItem(String id) async {
+    //final uid = FirebaseFirestore.instance.collection('UserRequest').id;
+    try {
+      final QuerySnapshot mainCollectionSnapshot =
+          await FirebaseFirestore.instance.collectionGroup('UserRequest').get();
+
+      final QuerySnapshot subCollectionSnapshot = await FirebaseFirestore
+          .instance
+          .collection('UserRequest/${id}/Item')
+          .get();
+
+      for (QueryDocumentSnapshot subDocument in subCollectionSnapshot.docs) {
+        items.add(subDocument);
+        print('Sub-Collection Doc ID: ${subDocument.id}');
+        print('Sub-Collection Doc Data: ${subDocument.data()}');
+      }
+
+      setState(() {}); // Trigger rebuild after data retrieval
+
+    } catch (e) {
+      print('Error: $e');
+    }
+  }
+
+  List<QueryDocumentSnapshot> items = [];
+  @override
+  void initState() {
+    getItem(widget.id);
+
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text(
+          'Detail Request',
+          style: TextStyle(color: Colors.amber),
+        ),
+        backgroundColor: Colors.black,
+      ),
+      body: Column(
+        children: [
+          SizedBox(
+            height: 300,
+            child: ListView.builder(
+              itemCount: items.length,
+              itemBuilder: (context, index) {
+                return SizedBox(
+                  child: Card(
+                    elevation: 10,
+                    margin: const EdgeInsets.all(5),
+                    child: Row(
+                      children: [
+                        Image.network(
+                          items[index]['image'],
+                          height: 80,
+                          width: 80,
+                        ),
+                        const SizedBox(width: 16.0),
+                        Expanded(
+                          child: Text(
+                            items[index]['name'],
+                            style: const TextStyle(fontSize: 15),
+                            softWrap: false,
+                            maxLines: 2,
+                            overflow: TextOverflow.visible, // new
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                );
+              },
+            ),
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: ElevatedButton(
+                  onPressed: () {},
+                  child: const Text('Approve'),
+                  style: ElevatedButton.styleFrom(primary: Colors.green),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: ElevatedButton(
+                  onPressed: () {},
+                  child: const Text('Rejected'),
+                  style: ElevatedButton.styleFrom(primary: Colors.red),
+                ),
+              ),
+            ],
+          ),
+        ],
       ),
     );
   }
