@@ -28,6 +28,7 @@ class _AdminPageState extends State<AdminPage> {
   //     'status': 'pending',
   //   });
   final FirebaseAuth _auth = FirebaseAuth.instance;
+
   // Future<QuerySnapshot> getData() async {
   //   final User? user = _auth.currentUser;
   //   final _uid = user!.uid;
@@ -104,9 +105,35 @@ class _AdminPageState extends State<AdminPage> {
           name = data['FullName'];
           // phone = data[“Phone”];
           // school = data[“school”];
-          // studentid = data[“studentId”];
+          // studentid = data[“studentIds”];
           // profileurl = data[“ProfileImageUrl”];
         });
+      }
+    } catch (e) {
+      print('Error: $e');
+    }
+  }
+
+  List<QueryDocumentSnapshot> items = [];
+
+  Future<void> getItem() async {
+    try {
+      final QuerySnapshot mainCollectionSnapshot =
+          await FirebaseFirestore.instance.collectionGroup('UserRequest').get();
+
+      for (QueryDocumentSnapshot mainDocument in mainCollectionSnapshot.docs) {
+        print('Main-Collection Doc ID: ${mainDocument.id}');
+
+        final QuerySnapshot subCollectionSnapshot = await FirebaseFirestore
+            .instance
+            .collection('UserRequest/${mainDocument.id}/Item')
+            .get();
+
+        for (QueryDocumentSnapshot subDocument in subCollectionSnapshot.docs) {
+          items.add(subDocument);
+          print('Sub-Collection Doc ID: ${subDocument.id}');
+          print('Sub-Collection Doc Data: ${subDocument.data()}');
+        }
       }
     } catch (e) {
       print('Error: $e');
@@ -116,209 +143,223 @@ class _AdminPageState extends State<AdminPage> {
   @override
   void initState() {
     getData();
+    getItem();
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.amber[700], // Set the background color to amber
-      ),
-      body: Center(
-        child: Column(
-          children: [
-            StreamBuilder<QuerySnapshot>(
-              stream: FirebaseFirestore.instance
-                  .collection("UserRequest")
-                  .snapshots(),
-              builder: (BuildContext context,
-                  AsyncSnapshot<QuerySnapshot> snapshot) {
-                // if (snapshot.connectionState == ConnectionState.waiting) {
-                //   return const Center(child: CircularProgressIndicator());
-                // }
-                if (snapshot.hasError) {
-                  return Text('Error: ${snapshot.error}');
-                }
-
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return const Text('Loading...');
-                }
-
-                if (!snapshot.hasData) {
-                  return const Text('Collection is empty');
-                }
-
-                List<DocumentSnapshot> snap = snapshot.data!.docs;
-                print(snap);
-                //Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
-
-                // for (QueryDocumentSnapshot document in documents) {
-                //   // Access the subcollections within each document
-                //   CollectionReference subcollectionRef =
-                //       document.reference.collection('Item');
-
-                //   subcollectionRef
-                //       .get()
-                //       .then((QuerySnapshot subcollectionSnapshot) {
-                //     List<QueryDocumentSnapshot> subcollectionDocs =
-                //         subcollectionSnapshot.docs;
-
-                //     Map<String, dynamic> data =
-                //         subcollectionDocs.data() as Map<String, dynamic>;
-                //   });
-                // }
-                return SizedBox(
-                  height: 400,
-                  child: ListView.builder(
-                    itemCount: snap.length,
-                    itemBuilder: (context, index) {
-                      return Card(
-                        child: Padding(
-                          padding: const EdgeInsets.all(16.0),
-                          child: Row(
-                            children: [
-                              Image.network(
-                                snap[index]['image'],
-                                height: 80,
-                                width: 80,
-                              ),
-                              const SizedBox(width: 16.0),
-                              Expanded(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      snap[index]['name'],
-                                      style: const TextStyle(fontSize: 15),
-                                      softWrap: false,
-                                      maxLines: 2,
-                                      overflow: TextOverflow.visible, // new
-                                    ),
-                                  ],
-                                ),
-                              ),
-
-                              // Column(
-                              //   children: <Widget>[
-                              //     ElevatedButton(
-                              //         onPressed: () {
-                              //           showDialog(
-                              //             context: context,
-                              //             builder: (BuildContext context) {
-                              //               return AlertDialog(
-                              //                 title:
-                              //                     const Text('Confirm Accept'),
-                              //                 actions: <Widget>[
-                              //                   ElevatedButton(
-                              //                       onPressed: () {
-                              //                         Navigator.pop(context);
-                              //                         updateData(
-                              //                             snap[index]['name'],
-                              //                             'borrowing');
-                              //                         updateUserData(
-                              //                           snap[index]['name'],
-                              //                           'borrowing',
-                              //                           snap[index]['userId'],
-                              //                         );
-
-                              //                         FirebaseFirestore.instance
-                              //                             .collection(
-                              //                                 'UserRequest')
-                              //                             .doc(snap[index].id)
-                              //                             .delete();
-
-                              //                         addData(
-                              //                           snap[index]
-                              //                               ['date_start'],
-                              //                           snap[index]['date_end'],
-                              //                           snap[index]['name'],
-                              //                           snap[index]['image'],
-                              //                           snap[index]['day'],
-                              //                           snap[index]['userId'],
-                              //                           snap[index]
-                              //                               ['userEmail'],
-                              //                         );
-                              //                       },
-                              //                       child: const Text('data'))
-                              //                 ],
-                              //               );
-                              //             },
-                              //           );
-                              //         },
-                              //         child: const Text('data'))
-                              //   ],
-                              // ),
-                            ],
-                          ),
-                        ),
-                      );
-                    },
-                  ),
-                );
-              },
-            ),
-          ],
-        ),
-      ),
-      drawer: Drawer(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Expanded(
-              flex: -1,
-              child: Container(
-                color: Colors.black,
-                alignment: Alignment.center,
-                // height: 100,
-                //width: 300,
-                child: Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: Text(
-                    '$email',
-                    style: const TextStyle(fontSize: 20, color: Colors.amber),
-                  ),
-                ),
-              ),
-            ),
-
-            ListTile(
-              title: const Text('User Request'),
-              onTap: () {
-                // Update the state of the app
-                // ...
-                // Then close the drawer
-                Navigator.pop(context);
-              },
-            ),
-            ListTile(
-              title: const Text('Borrowing'),
-              onTap: () {
-                // Update the state of the app
-                // ...
-                // Then close the drawer
-                Navigator.pop(context);
-              },
-            ),
-            const Expanded(
-                child:
-                    SizedBox()), // Added Expanded widget to fill the remaining space
-            Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  primary: Colors.black,
-                  onPrimary: Colors.amber,
-                ),
-                onPressed: () {
-                  AuthService().signOut();
-                },
-                child: const Text('Sign Out'),
-              ),
-            ),
-          ],
-        ),
-      ),
+    return ListView.builder(
+      itemCount: items.length,
+      itemBuilder: (BuildContext context, int index) {
+        QueryDocumentSnapshot display = items[index];
+        return Text(display({'data': 'name'}));
+        //  ListTile(
+        //   title: Text(display['name']),
+        //   subtitle: Text(display['subtitle']),
+        // );
+      },
     );
   }
 }
+  // @override
+  //  Widget build(BuildContext context) {
+  //   return Scaffold(
+  //     appBar: AppBar(
+  //       backgroundColor: Colors.amber[700], // Set the background color to amber
+  //     ),
+  //     body: Center(
+  //       child: Column(
+  //         children: [
+  //           StreamBuilder<QuerySnapshot>(
+  //             stream: QueryDocumentSnapshot subDocument = items[index];,
+  //             builder: (BuildContext context,
+  //                 AsyncSnapshot<QuerySnapshot> snapshot) {
+  //               // if (snapshot.connectionState == ConnectionState.waiting) {
+  //               //   return const Center(child: CircularProgressIndicator());
+  //               // }
+  //               if (snapshot.hasError) {
+  //                 return Text('Error: ${snapshot.error}');
+  //               }
+
+  //               if (snapshot.connectionState == ConnectionState.waiting) {
+  //                 return const Text('Loading...');
+  //               }
+
+  //               if (!snapshot.hasData) {
+  //                 return const Text('Collection is empty');
+  //               }
+  //               QueryDocumentSnapshot subDocument = items[index];
+  //               //List<DocumentSnapshot> snap = snapshot.data!.docs;
+  //               //print('DeBug =  $snap');
+
+  //               //Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
+
+  //               // for (QueryDocumentSnapshot document in documents) {
+  //               //   // Access the subcollections within each document
+  //               //   CollectionReference subcollectionRef =
+  //               //       document.reference.collection('Item');
+
+  //               //   subcollectionRef
+  //               //       .get()
+  //               //       .then((QuerySnapshot subcollectionSnapshot) {
+  //               //     List<QueryDocumentSnapshot> subcollectionDocs =
+  //               //         subcollectionSnapshot.docs;
+
+  //               //     Map<String, dynamic> data =
+  //               //         subcollectionDocs.data() as Map<String, dynamic>;
+  //               //   });
+  //               // }
+  //               return SizedBox(
+  //                 height: 400,
+  //                 child: ListView.builder(
+  //                   itemCount: Items.length,
+  //                   itemBuilder: (context, index) {
+  //                     return Card(
+  //                       child: Padding(
+  //                         padding: const EdgeInsets.all(16.0),
+  //                         child: Row(
+  //                           children: [
+  //                             Image.network(
+  //                               snap[index]['image'],
+  //                               height: 80,
+  //                               width: 80,
+  //                             ),
+  //                             const SizedBox(width: 16.0),
+  //                             Expanded(
+  //                               child: Column(
+  //                                 crossAxisAlignment: CrossAxisAlignment.start,
+  //                                 children: [
+  //                                   Text(
+  //                                     snap[index]['name'],
+  //                                     style: const TextStyle(fontSize: 15),
+  //                                     softWrap: false,
+  //                                     maxLines: 2,
+  //                                     overflow: TextOverflow.visible, // new
+  //                                   ),
+  //                                 ],
+  //                               ),
+  //                             ),
+
+  //                             // Column(
+  //                             //   children: <Widget>[
+  //                             //     ElevatedButton(
+  //                             //         onPressed: () {
+  //                             //           showDialog(
+  //                             //             context: context,
+  //                             //             builder: (BuildContext context) {
+  //                             //               return AlertDialog(
+  //                             //                 title:
+  //                             //                     const Text('Confirm Accept'),
+  //                             //                 actions: <Widget>[
+  //                             //                   ElevatedButton(
+  //                             //                       onPressed: () {
+  //                             //                         Navigator.pop(context);
+  //                             //                         updateData(
+  //                             //                             snap[index]['name'],
+  //                             //                             'borrowing');
+  //                             //                         updateUserData(
+  //                             //                           snap[index]['name'],
+  //                             //                           'borrowing',
+  //                             //                           snap[index]['userId'],
+  //                             //                         );
+
+  //                             //                         FirebaseFirestore.instance
+  //                             //                             .collection(
+  //                             //                                 'UserRequest')
+  //                             //                             .doc(snap[index].id)
+  //                             //                             .delete();
+
+  //                             //                         addData(
+  //                             //                           snap[index]
+  //                             //                               ['date_start'],
+  //                             //                           snap[index]['date_end'],
+  //                             //                           snap[index]['name'],
+  //                             //                           snap[index]['image'],
+  //                             //                           snap[index]['day'],
+  //                             //                           snap[index]['userId'],
+  //                             //                           snap[index]
+  //                             //                               ['userEmail'],
+  //                             //                         );
+  //                             //                       },
+  //                             //                       child: const Text('data'))
+  //                             //                 ],
+  //                             //               );
+  //                             //             },
+  //                             //           );
+  //                             //         },
+  //                             //         child: const Text('data'))
+  //                             //   ],
+  //                             // ),
+  //                           ],
+  //                         ),
+  //                       ),
+  //                     );
+  //                   },
+  //                 ),
+  //               );
+  //             },
+  //           ),
+  //         ],
+  //       ),
+  //     ),
+  //     drawer: Drawer(
+  //       child: Column(
+  //         mainAxisAlignment: MainAxisAlignment.center,
+  //         children: [
+  //           Expanded(
+  //             flex: -1,
+  //             child: Container(
+  //               color: Colors.black,
+  //               alignment: Alignment.center,
+  //               // height: 100,
+  //               //width: 300,
+  //               child: Padding(
+  //                 padding: const EdgeInsets.all(16.0),
+  //                 child: Text(
+  //                   '$email',
+  //                   style: const TextStyle(fontSize: 20, color: Colors.amber),
+  //                 ),
+  //               ),
+  //             ),
+  //           ),
+
+  //           ListTile(
+  //             title: const Text('User Request'),
+  //             onTap: () {
+  //               // Update the state of the app
+  //               // ...
+  //               // Then close the drawer
+  //               Navigator.pop(context);
+  //             },
+  //           ),
+  //           ListTile(
+  //             title: const Text('Borrowing'),
+  //             onTap: () {
+  //               // Update the state of the app
+  //               // ...
+  //               // Then close the drawer
+  //               Navigator.pop(context);
+  //             },
+  //           ),
+  //           const Expanded(
+  //               child:
+  //                   SizedBox()), // Added Expanded widget to fill the remaining space
+  //           Padding(
+  //             padding: const EdgeInsets.all(16.0),
+  //             child: ElevatedButton(
+  //               style: ElevatedButton.styleFrom(
+  //                 primary: Colors.black,
+  //                 onPrimary: Colors.amber,
+  //               ),
+  //               onPressed: () {
+  //                 AuthService().signOut();
+  //               },
+  //               child: const Text('Sign Out'),
+  //             ),
+  //           ),
+  //         ],
+  //       ),
+  //     ),
+  //   );
+  // }
