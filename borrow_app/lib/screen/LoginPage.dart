@@ -160,6 +160,7 @@ class _LoginState extends State<Login> {
                                         const ForgotPasswordPage(),
                                   ),
                                 );
+                                clearText();
                               },
                               child: const Text('Forgot Password?'),
                             ),

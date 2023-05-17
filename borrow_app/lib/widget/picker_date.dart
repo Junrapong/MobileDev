@@ -17,9 +17,14 @@ class DatePickerPage extends StatefulWidget {
   _DatePickerPageState createState() => _DatePickerPageState();
 }
 
+// class _DatePickerPageState extends State<DatePickerPage> {
+//   DateTimeRange dateRange =
+//       DateTimeRange(start: DateTime(2023, 5, 22), end: DateTime(2023, 5, 28));
 class _DatePickerPageState extends State<DatePickerPage> {
-  DateTimeRange dateRange =
-      DateTimeRange(start: DateTime(2023, 5, 1), end: DateTime(2023, 5, 7));
+  DateTimeRange dateRange = DateTimeRange(
+    start: DateTime.now(),
+    end: DateTime.now().add(Duration(days: 1)),
+  );
 
   // Future<QuerySnapshot> getData() async {
   //   final User? user = _auth.currentUser;
@@ -31,7 +36,9 @@ class _DatePickerPageState extends State<DatePickerPage> {
   //       .get();
   //   return querySnapshot;
   // }
-  Future<void> sendCollectionToAnotherCollection() async {
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+  Future<void> sendCollectionToAnotherCollection(
+      String start, String end, int diff) async {
     final User? user = _auth.currentUser;
     final _uid = user!.uid;
 
@@ -42,81 +49,100 @@ class _DatePickerPageState extends State<DatePickerPage> {
         .collection('Pending')
         .get();
 
-    snapshot.docs.forEach((DocumentSnapshot doc) async {
-      Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
+    snapshot.docs.forEach(
+      (DocumentSnapshot doc) async {
+        Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
 
-      // สร้างเอกสารใน collection "UserRequest" และเก็บข้อมูลภายในเอกสารด้วย .set()
-      await FirebaseFirestore.instance
-          .collection('UserRequest')
-          .doc(FirebaseAuth.instance.currentUser!.uid)
-          .collection('Item')
-          .doc()
-          .set({
-        'data': data,
-      });
-    });
+        // สร้างเอกสารใน collection "UserRequest" และเก็บข้อมูลภายในเอกสารด้วย .set()
+
+        await FirebaseFirestore.instance
+            .collection('UserRequest')
+            .doc(FirebaseAuth.instance.currentUser!.uid)
+            .collection('Item')
+            .doc(data['name'])
+            .set({
+          'data': data,
+        });
+        await FirebaseFirestore.instance
+            .collection('UserRequest')
+            .doc(FirebaseAuth.instance.currentUser!.uid)
+            .set(
+          {
+            'start': start,
+            'end': end,
+            'diff': diff,
+            'status': 'pending',
+          },
+        );
+        FirebaseFirestore.instance
+            .collection('user')
+            .doc(FirebaseAuth.instance.currentUser!.uid)
+            .collection('Pending')
+            .doc(data['name'])
+            .delete();
+      },
+    );
   }
 
-  final FirebaseAuth _auth = FirebaseAuth.instance;
-  Future addBorrow(
-    String start,
-    String end,
-    String productName,
-    String productImage,
-    int day,
-  ) async {
-    final User? user = _auth.currentUser;
-    final _uid = user!.uid;
-    await FirebaseFirestore.instance
-        .collection('user')
-        .doc(_uid)
-        .collection('Pending')
-        .doc(productName)
-        .set({
-      'date_start': start,
-      'date_end': end,
-      'name': productName,
-      'image': productImage,
-      'day': day,
-      'status': 'pending',
-    });
-  }
+  // Future addBorrow(
+  //   String start,
+  //   String end,
+  //   String productName,
+  //   String productImage,
+  //   int day,
+  // ) async {
+  //   final User? user = _auth.currentUser;
+  //   final _uid = user!.uid;
+  //   await FirebaseFirestore.instance
+  //       .collection('user')
+  //       .doc(_uid)
+  //       .collection('Pending')
+  //       .doc(productName)
+  //       .set({
+  //     'date_start': start,
+  //     'date_end': end,
+  //     'name': productName,
+  //     'image': productImage,
+  //     'day': day,
+  //     'status': 'pending',
+  //   });
+  // }
 
-  Future addRequestAdmin(String productName, String productImage) async {
-    final User? user = _auth.currentUser;
-    final _uid = user!.uid;
-    final _email = user.email;
-    await FirebaseFirestore.instance
-        .collection('UserRequest')
-        .doc(productName)
-        .set({
-      // 'date_start': start,
-      // 'date_end': end,
-      'name': productName,
-      'image': productImage,
-      // 'day': day,
-      'userId': _uid,
-      'useremail': _email,
-    });
-    //sendCollectionToAnotherCollection();
-  }
+  // Future addRequestAdmin(String productName, String productImage) async {
+  //   final User? user = _auth.currentUser;
+  //   final _uid = user!.uid;
+  //   final _email = user.email;
+  //   await FirebaseFirestore.instance
+  //       .collection('UserRequest')
+  //       .doc(productName)
+  //       .set({
+  //     // 'date_start': start,
+  //     // 'date_end': end,
+  //     'name': productName,
+  //     'image': productImage,
+  //     // 'day': day,
+  //     'userId': _uid,
+  //     'useremail': _email,
+  //   });
+  //   //sendCollectionToAnotherCollection();
+  // }
 
-  Future updateData() async {
-    final productsQuery = FirebaseFirestore.instance
-        .collection('products')
-        .where('products_name', isEqualTo: widget.productName);
+  // Future updateData() async {
+  //   final productsQuery = FirebaseFirestore.instance
+  //       .collection('products')
+  //       .where('products_name', isEqualTo: widget.productName);
 
-    final querySnapshot = await productsQuery.get();
-    final documentSnapshot = querySnapshot.docs.first;
-    final documentId = documentSnapshot.id;
+  //   final querySnapshot = await productsQuery.get();
+  //   final documentSnapshot = querySnapshot.docs.first;
+  //   final documentId = documentSnapshot.id;
 
-    final documentReference =
-        FirebaseFirestore.instance.collection('products').doc(documentId);
+  //   final documentReference =
+  //       FirebaseFirestore.instance.collection('products').doc(documentId);
 
-    documentReference.update({
-      'status': 'pending',
-    });
-  }
+  //   documentReference.update({
+  //     'status': 'pending',
+  //   });
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -190,7 +216,7 @@ class _DatePickerPageState extends State<DatePickerPage> {
                   primary: Colors.black,
                   onPrimary: Colors.amber,
                 ),
-                onPressed: () {
+                onPressed: () async {
                   if (diff.inDays > 7) {
                     showDialog(
                       context: context,
@@ -215,19 +241,11 @@ class _DatePickerPageState extends State<DatePickerPage> {
                       },
                     );
                   } else {
-                    addBorrow(
+                    await sendCollectionToAnotherCollection(
                       DateFormat('yyyy/MM/dd').format(start),
                       DateFormat('yyyy/MM/dd').format(end),
-                      widget.productName,
-                      widget.productImage,
                       diff.inDays,
                     );
-                    addRequestAdmin(
-                      widget.productName,
-                      widget.productImage,
-                    );
-                    sendCollectionToAnotherCollection();
-                    updateData();
 
                     Navigator.push(
                       context,

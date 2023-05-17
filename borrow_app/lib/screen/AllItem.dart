@@ -34,8 +34,8 @@ class _AllItemState extends State<AllItem> {
         ],
         backgroundColor: Colors.white,
         elevation: 0.1,
-        title: Center(
-          child: const Text(
+        title: const Center(
+          child: Text(
             'All item',
             textAlign: TextAlign.center,
             style: TextStyle(
@@ -81,7 +81,7 @@ class _AllItemState extends State<AllItem> {
                       ),
                     ),
                   ),
-                  Text('data')
+                  const Text('data')
                 ],
               ),
             ),

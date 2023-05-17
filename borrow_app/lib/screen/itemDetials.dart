@@ -2,8 +2,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
-import '../widget/cart_service.dart';
-
 class ItemDetails extends StatelessWidget {
   ItemDetails(this.itemId, {Key? key, required String documentId})
       : super(key: key) {
@@ -61,7 +59,6 @@ class ItemDetails extends StatelessWidget {
         .set({
       'name': productName,
       'image': productImage,
-      'status': 'pending',
     });
   }
 
