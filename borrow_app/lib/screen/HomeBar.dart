@@ -7,7 +7,7 @@ import 'package:borrow_app/utils/color.dart';
 import 'package:flutter/material.dart';
 
 class HomeBar extends StatefulWidget {
-  const HomeBar({super.key});
+  const HomeBar({Key? key}) : super(key: key);
 
   @override
   State<HomeBar> createState() => _HomeBarState();
@@ -22,7 +22,7 @@ class _HomeBarState extends State<HomeBar> {
       productName: '',
     ),
     const History(),
-    ProfileScreen(),
+    ProfileScreen()
   ];
 
   void _onItemTapped(int index) {

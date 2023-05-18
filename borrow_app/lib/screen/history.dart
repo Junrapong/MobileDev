@@ -5,7 +5,7 @@ import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
 
 class History extends StatefulWidget {
-  const History({super.key});
+  const History({Key? key});
 
   @override
   State<History> createState() => _HistoryState();
@@ -36,47 +36,49 @@ class _HistoryState extends State<History> {
         ),
       ),
       body: StreamBuilder<DocumentSnapshot<Map<String, dynamic>>>(
-          stream: getFirestoreCollection()
-              .doc(FirebaseAuth.instance.currentUser!.uid)
-              .snapshots(),
-          builder: (context, snapshot) {
-            if (snapshot.hasError) {
-              return const Text("Connection error");
-            }
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              return const Text("Loading. . . ");
-            }
-            final data = snapshot.data!.data();
-            return Container(
-              color: Color.fromARGB(255, 233, 216, 166),
-              child: Column(
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text('Email : '),
-                      Text(
-                        '${data!['email']}',
-                        style: const TextStyle(fontSize: 15),
-                        softWrap: false,
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                    ],
-                  ),
-                  Column(
-                    children: [
-                      Text('Detail : '),
-                      Text('Borrow ${data['diff']} days'),
-                      Text('Start ${data['start']}'),
-                      Text('Start ${data['end']}'),
-                    ],
-                  ),
-                  ElevatedButton(onPressed: () {}, child: Text(data['status']))
-                ],
-              ),
-            );
-          }),
+        stream: getFirestoreCollection()
+            .doc(FirebaseAuth.instance.currentUser!.uid)
+            .snapshots(),
+        builder: (context, snapshot) {
+          if (snapshot.hasError) {
+            return const Text("Connection error");
+          }
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Text("Loading. . . ");
+          }
+          final data = snapshot.data?.data();
+          return Container(
+            color: const Color.fromARGB(255, 233, 216, 166),
+            child: Column(
+              children: [
+                const SizedBox(height: 15),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const Text('Email : '),
+                    Text(
+                      '${data?['email']}',
+                      style: const TextStyle(fontSize: 15),
+                      softWrap: false,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ],
+                ),
+                Column(
+                  children: [
+                    Text('Borrow ${data?['diff']} days'),
+                    Text('Start ${data?['start']}'),
+                    Text('Start ${data?['end']}'),
+                  ],
+                ),
+                ElevatedButton(
+                    onPressed: () {}, child: Text(data?['status'] ?? '')),
+              ],
+            ),
+          );
+        },
+      ),
     );
   }
 }

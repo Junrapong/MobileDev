@@ -17,7 +17,7 @@ FirebaseAuth auth = FirebaseAuth.instance;
 //final user = FirebaseAuth.instance.currentUser;
 
 class ProfileScreen extends StatefulWidget {
-  ProfileScreen({super.key});
+  ProfileScreen({Key? key}) : super(key: key);
 
   @override
   State<ProfileScreen> createState() => _ProfileScreenState();
@@ -32,22 +32,25 @@ class _ProfileScreenState extends State<ProfileScreen> {
   String? profileurl;
   // get user info
   Future<void> getData() async {
-    FirebaseFirestore.instance
-        .collection('user')
-        .doc(FirebaseAuth.instance.currentUser!.uid)
-        .get()
-        .then((value) async {
-      if (value.exists) {
-        setState(() {
-          email = value.data()!["Email"];
-          name = value.data()!["FullName"];
-          phone = value.data()!["Phone"];
-          school = value.data()!["school"];
-          studentid = value.data()!["studentId"];
-          profileurl = value.data()!["ProfileImageUrl"];
-        });
-      }
-    });
+    final currentUser = FirebaseAuth.instance.currentUser;
+    if (currentUser != null) {
+      FirebaseFirestore.instance
+          .collection('user')
+          .doc(currentUser.uid)
+          .get()
+          .then((value) async {
+        if (value.exists) {
+          setState(() {
+            email = value.data()!["Email"];
+            name = value.data()!["FullName"];
+            phone = value.data()!["Phone"];
+            school = value.data()!["school"];
+            studentid = value.data()!["studentId"];
+            profileurl = value.data()!["ProfileImageUrl"];
+          });
+        }
+      });
+    }
   }
 
   @override
@@ -95,7 +98,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(100.0),
                   child: CachedNetworkImage(
-                    imageUrl: "$profileurl",
+                    imageUrl: profileurl ?? "",
                     height: 60,
                     width: 60,
                     fit: BoxFit.cover,
@@ -105,19 +108,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
               const SizedBox(
                 height: 10,
               ),
-              FirebaseAuth.instance.currentUser!.email == null
-                  ? const Text('Waiting...')
-                  : Text('Name: $name'),
+              Text('Name: $name'),
               Text('ID: $studentid'),
               Text('Phone: $phone'),
               Text('School: $school'),
-              Text('Email: ${FirebaseAuth.instance.currentUser!.email}'),
+              Text('Email: ${FirebaseAuth.instance.currentUser?.email ?? ""}'),
               const SizedBox(
                 height: 10,
               ),
-              // FirebaseAuth.instance.currentUser!.displayName == null
-              //     ? const Text('Waiting...')
-              //     : Text('${FirebaseAuth.instance.currentUser!.displayName}'),
               SizedBox(
                   width: 200,
                   child: ElevatedButton(
@@ -126,7 +124,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           context,
                           MaterialPageRoute(
                               builder: (context) => UpdateProfileScreen(
-                                    imgurl: '$profileurl',
+                                    imgurl: profileurl ?? '',
                                   )));
                     },
                     style: ElevatedButton.styleFrom(
@@ -161,9 +159,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       context,
                       MaterialPageRoute(builder: (context) => const FAQ()),
                     );
-                  }), SizedBox(
-              width: double.infinity,
-              child: ElevatedButton(
+                  }),
+              SizedBox(
+                width: double.infinity,
+                child: ElevatedButton(
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.black,
                     shape: RoundedRectangleBorder(
@@ -181,8 +180,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       );
                     });
                   },
-                  child: Text('Logout'.toUpperCase())),
-            ),
+                  child: Text('Logout'.toUpperCase()),
+                ),
+              ),
             ],
           ),
         ),
@@ -210,29 +210,29 @@ class ProfileMenuWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListTile(
-        onTap: onPress,
-        leading: Container(
-          width: 30,
-          height: 30,
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(100),
-            color: Colors.yellow.withOpacity(0.1),
-          ),
-          child: Icon(
-            icon,
-            color: const Color.fromARGB(255, 100, 8, 238),
-          ),
+      onTap: onPress,
+      leading: Container(
+        width: 30,
+        height: 30,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(100),
+          color: Colors.yellow.withOpacity(0.1),
         ),
-        title: Text(title, style: Theme.of(context).textTheme.bodyText1),
-        trailing: Container(
-            width: 30,
-            height: 30,
-            decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(100),
-                color: Colors.grey.withOpacity(0.1)),
-            child: const Icon(LineAwesomeIcons.angle_right,
-                size: 18.0, color: Colors.grey))
-        //   : null,
-        );
+        child: Icon(
+          icon,
+          color: const Color.fromARGB(255, 100, 8, 238),
+        ),
+      ),
+      title: Text(title, style: Theme.of(context).textTheme.bodyText1),
+      trailing: Container(
+        width: 30,
+        height: 30,
+        decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(100),
+            color: Colors.grey.withOpacity(0.1)),
+        child: const Icon(LineAwesomeIcons.angle_right,
+            size: 18.0, color: Colors.grey),
+      ),
+    );
   }
 }
