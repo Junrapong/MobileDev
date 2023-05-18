@@ -691,7 +691,12 @@ class _DetialRequestState extends State<DetialRequest> {
               Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: ElevatedButton(
-                  onPressed: () {},
+                  onPressed: () async {
+                    await FirebaseFirestore.instance
+                        .collection('UserRequest')
+                        .doc(widget.id)
+                        .update({'status': 'ready'});
+                  },
                   child: const Text('Approve'),
                   style: ElevatedButton.styleFrom(primary: Colors.green),
                 ),

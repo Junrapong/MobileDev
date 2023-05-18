@@ -24,12 +24,19 @@ class ItemDetails extends StatelessWidget {
     final User? user = _auth.currentUser;
     final uid = user!.uid;
 
-    final QuerySnapshot querySnapshot = await FirebaseFirestore.instance
+    final QuerySnapshot querySnapshotCart = await FirebaseFirestore.instance
         .collection('user')
         .doc(uid)
         .collection('Pending')
         .get();
-    if (querySnapshot.size >= 3) {
+
+    final QuerySnapshot querySnapshotUserRequest = await FirebaseFirestore
+        .instance
+        .collection('UserRequest')
+        .doc(uid)
+        .collection('Item')
+        .get();
+    if (querySnapshotCart.docs.length >= 3) {
       // User has already selected 3 products, show an error message or handle accordingly
       showDialog(
         context: context,
@@ -49,8 +56,27 @@ class ItemDetails extends StatelessWidget {
         },
       );
       return;
+    } else if (querySnapshotUserRequest.docs.length >= 3) {
+      // User has already selected 3 products, show an error message or handle accordingly
+      showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: const Text('Product Limit Exceeded'),
+            content: const Text('You have over limit.'),
+            actions: <Widget>[
+              TextButton(
+                child: const Text('OK'),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+            ],
+          );
+        },
+      );
+      return;
     }
-
     await FirebaseFirestore.instance
         .collection('user')
         .doc(uid)

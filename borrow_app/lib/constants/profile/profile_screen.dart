@@ -29,7 +29,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   String? profileurl;
   // get user info
   Future<void> getData() async {
-    await FirebaseFirestore.instance
+    FirebaseFirestore.instance
         .collection('user')
         .doc(FirebaseAuth.instance.currentUser!.uid)
         .get()
@@ -196,7 +196,7 @@ class ProfileMenuWidget extends StatelessWidget {
           ),
           child: Icon(
             icon,
-            color: Color.fromARGB(255, 100, 8, 238),
+            color: const Color.fromARGB(255, 100, 8, 238),
           ),
         ),
         title: Text(title, style: Theme.of(context).textTheme.bodyText1),
