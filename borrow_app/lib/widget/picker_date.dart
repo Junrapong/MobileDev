@@ -26,6 +26,27 @@ class _DatePickerPageState extends State<DatePickerPage> {
     end: DateTime.now().add(Duration(days: 1)),
   );
 
+  int cCo = 0;
+  int cRe = 0;
+
+  Future<void> fetchlenght() async {
+    QuerySnapshot snapshot = await FirebaseFirestore.instance
+        .collection('user')
+        .doc(FirebaseAuth.instance.currentUser!.uid)
+        .collection('Pending')
+        .get();
+    QuerySnapshot snapshit = await FirebaseFirestore.instance
+        .collection('UserRequest')
+        .doc(FirebaseAuth.instance.currentUser!.uid)
+        .collection('Item')
+        .get();
+
+    setState(() {
+      cCo = snapshot.docs.length;
+      cRe = snapshit.docs.length;
+    });
+  }
+
   // Future<QuerySnapshot> getData() async {
   //   final User? user = _auth.currentUser;
   //   final _uid = user!.uid;
@@ -85,6 +106,10 @@ class _DatePickerPageState extends State<DatePickerPage> {
             .collection('Pending')
             .doc(data['name'])
             .delete();
+        // await FirebaseFirestore.instance
+        //     .collection('UserRequest')
+        //     .doc(FirebaseAuth.instance.currentUser!.uid)
+        //     .update({'status': 'ready'});
       },
     );
   }
@@ -93,7 +118,7 @@ class _DatePickerPageState extends State<DatePickerPage> {
   //   String start,
   //   String end,
   //   String productName,
-  //   String productImage,
+  //   String productImage,fdcrrrrrrrrcccccccccccccccrr
   //   int day,
   // ) async {
   //   final User? user = _auth.currentUser;
@@ -148,6 +173,12 @@ class _DatePickerPageState extends State<DatePickerPage> {
   //     'status': 'pending',
   //   });
   // }
+
+  @override
+  void initState() {
+    fetchlenght();
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -247,18 +278,42 @@ class _DatePickerPageState extends State<DatePickerPage> {
                       },
                     );
                   } else {
-                    await sendCollectionToAnotherCollection(
-                      DateFormat('yyyy/MM/dd').format(start),
-                      DateFormat('yyyy/MM/dd').format(end),
-                      diff.inDays,
-                    );
-
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const History(),
-                      ),
-                    );
+                    if (cCo + cRe <= 3) {
+                      await sendCollectionToAnotherCollection(
+                        DateFormat('yyyy/MM/dd').format(start),
+                        DateFormat('yyyy/MM/dd').format(end),
+                        diff.inDays,
+                      );
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const History(),
+                        ),
+                      );
+                    } else {
+                      showDialog(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return AlertDialog(
+                            backgroundColor:
+                                const Color.fromARGB(255, 245, 243, 243),
+                            title: const Text('Wrong Condition!'),
+                            content: const Text('You can borrow only 1-3 item'),
+                            actions: <Widget>[
+                              TextButton(
+                                child: const Text(
+                                  'OK',
+                                  style: TextStyle(color: Colors.black),
+                                ),
+                                onPressed: () {
+                                  Navigator.of(context).pop();
+                                },
+                              ),
+                            ],
+                          );
+                        },
+                      );
+                    }
                   }
                 },
                 // style: ElevatedButton.styleFrom(backgroundColor: Colors.white),
