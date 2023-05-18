@@ -8,6 +8,9 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:line_awesome_flutter/line_awesome_flutter.dart';
 
+import '../../screen/intro_screen.dart';
+import '../../widget/auth_service.dart';
+
 FirebaseAuth auth = FirebaseAuth.instance;
 // get the current user
 
@@ -158,7 +161,28 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       context,
                       MaterialPageRoute(builder: (context) => const FAQ()),
                     );
-                  }),
+                  }), SizedBox(
+              width: double.infinity,
+              child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.black,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(30),
+                    ),
+                  ),
+                  onPressed: () {
+                    setState(() {
+                      AuthService().signOut();
+                      Navigator.pushAndRemoveUntil(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const IntroScreen()),
+                        ((route) => false),
+                      );
+                    });
+                  },
+                  child: Text('Logout'.toUpperCase())),
+            ),
             ],
           ),
         ),

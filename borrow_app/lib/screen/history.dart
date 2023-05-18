@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
@@ -7,6 +9,10 @@ class History extends StatefulWidget {
 
   @override
   State<History> createState() => _HistoryState();
+}
+
+CollectionReference<Map<String, dynamic>> getFirestoreCollection() {
+  return FirebaseFirestore.instance.collection('UserRequest');
 }
 
 class _HistoryState extends State<History> {
@@ -29,55 +35,48 @@ class _HistoryState extends State<History> {
           ),
         ),
       ),
-      body: Column(
-        children: [
-          Container(
-            height: 40,
-            width: 5000,
-            color: Colors.purple[900],
-            child: const Center(
-              child: Text(
-                'ID                              Status                  View',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ),
-          ),
-          Container(
-            height: 100,
-            width: 5000,
-            color: Colors.purple[200],
-            child: Stack(
-              children: [
-                Padding(
-                  padding: EdgeInsets.all(8.0),
-                  child: Align(
-                    alignment: Alignment.centerLeft,
-                    child: Text(
-                      '123                    Borowed',
-                      style: TextStyle(
-                        fontSize: 20,
+      body: StreamBuilder<DocumentSnapshot<Map<String, dynamic>>>(
+          stream: getFirestoreCollection()
+              .doc(FirebaseAuth.instance.currentUser!.uid)
+              .snapshots(),
+          builder: (context, snapshot) {
+            if (snapshot.hasError) {
+              return const Text("Connection error");
+            }
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return const Text("Loading. . . ");
+            }
+            final data = snapshot.data!.data();
+            return Container(
+              color: Color.fromARGB(255, 233, 216, 166),
+              child: Column(
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text('Email : '),
+                      Text(
+                        '${data!['email']}',
+                        style: const TextStyle(fontSize: 15),
+                        softWrap: false,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
                       ),
-                    ),
+                    ],
                   ),
-                ),
-                Align(
-                  alignment: Alignment.centerRight,
-                  child: ElevatedButton(
-                    onPressed: () {
-                      // Button action goes here
-                    },
-                    child: Text('View Detail'),
+                  Column(
+                    children: [
+                      Text('Detail : '),
+                      Text('Borrow ${data['diff']} days'),
+                      Text('Start ${data['start']}'),
+                      Text('Start ${data['end']}'),
+                    ],
                   ),
-                ),
-              ],
-            ),
-          )
-        ],
-      ),
+                  ElevatedButton(onPressed: () {}, child: Text(data['status']))
+                ],
+              ),
+            );
+          }),
     );
   }
 }

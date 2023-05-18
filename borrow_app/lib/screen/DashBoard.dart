@@ -60,23 +60,23 @@ class _DashboardState extends State<Dashboard> {
             const Spacer(flex: 10),
           ],
         ),
-        actions: [
-          IconButton(
-              onPressed: () {
-                setState(() {
-                  Navigator.pushAndRemoveUntil(
-                    context,
-                    MaterialPageRoute(builder: (context) => const Setting()),
-                    ((route) => false),
-                  );
-                });
-              },
-              icon: const Icon(
-                FontAwesomeIcons.gear,
-                color: Colors.black87,
-                size: 20,
-              ))
-        ],
+        // actions: [
+        //   IconButton(
+        //       onPressed: () {
+        //         setState(() {
+        //           Navigator.pushAndRemoveUntil(
+        //             context,
+        //             MaterialPageRoute(builder: (context) => const Setting()),
+        //             ((route) => false),
+        //           );
+        //         });
+        //       },
+        //       icon: const Icon(
+        //         FontAwesomeIcons.gear,
+        //         color: Colors.black87,
+        //         size: 20,
+        //       ))
+        // ],
         backgroundColor: Colors.white,
       ),
       body: SafeArea(

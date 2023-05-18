@@ -98,6 +98,7 @@ class _DatePickerPageState extends State<DatePickerPage> {
             'end': end,
             'diff': diff,
             'status': 'pending',
+
           },
         );
         FirebaseFirestore.instance
