@@ -49,33 +49,33 @@ class _HistoryState extends State<History> {
           final data = snapshot.data?.data();
           return Container(
             color: const Color.fromARGB(255, 233, 216, 166),
-            child: Column(
-              children: [
-                const SizedBox(height: 15),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    const Text('Email : '),
-                    Text(
-                      '${data?['email']}',
-                      style: const TextStyle(fontSize: 15),
-                      softWrap: false,
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                  ],
-                ),
-                Column(
-                  children: [
-                    Text('Borrow ${data?['diff']} days'),
-                    Text('Start ${data?['start']}'),
-                    Text('Start ${data?['end']}'),
-                  ],
-                ),
-                ElevatedButton(
-                    onPressed: () {}, child: Text(data?['status'] ?? '')),
-              ],
-            ),
+            child: Column(children: [
+              const SizedBox(height: 15),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Text('Email : '),
+                  Text(
+                    '${data?['email'] ?? 'Wait for info'}',
+                    style: const TextStyle(fontSize: 15),
+                    softWrap: false,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ],
+              ),
+              Column(
+                children: [
+                  Text('Borrow : ${data?['diff'] ?? 'Wait for info'} days'),
+                  Text('Start :  ${data?['start'] ?? 'Wait for info'}'),
+                  Text('End :  ${data?['end'] ?? 'Wait for info'}'),
+                ],
+              ),
+              ElevatedButton(
+                onPressed: () {},
+                child: Text(data?['status'] ?? 'Wait for info'),
+              ),
+            ]),
           );
         },
       ),
