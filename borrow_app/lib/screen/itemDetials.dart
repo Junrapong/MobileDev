@@ -3,7 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class ItemDetails extends StatelessWidget {
-  ItemDetails(this.itemId, {Key? key, required String documentId})
+  ItemDetails(this.itemId, {Key? key})
       : super(key: key) {
     _reference = FirebaseFirestore.instance.collection('products').doc(itemId);
     _futureData = _reference.get();
@@ -150,29 +150,37 @@ class ItemDetails extends StatelessWidget {
                       const SizedBox(height: 8.0),
                       Text(
                         'Product name: ${data['products_name']}',
-                        style: const TextStyle(fontSize: 15),
+                        style: const TextStyle(
+                            fontSize: 15, fontWeight: FontWeight.bold),
+
                         softWrap: false,
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis, // new
                       ),
-                      const SizedBox(
-                        height: 10,
+                      // const SizedBox(height: 10),
+                      // Text('Product quantity: ${data['quantity']}',
+                      //     style: const TextStyle(
+                      //         fontSize: 20, fontWeight: FontWeight.bold)),
+                      // const SizedBox(height: 10),
+                      // Text(
+                      //   'Product price: ${data['price']}',
+                      //   style: const TextStyle(
+                      //     fontSize: 20,
+                      //     fontWeight: FontWeight.bold,
+                      //   ),
+                      // ),
+                      const SizedBox(height: 10),
+                      Padding(
+                        padding: const EdgeInsets.all(16.0),
+                        child: Text(
+                          'Product detail: ${data['detail']}',
+                          style: const TextStyle(fontSize: 15),
+                          softWrap: false,
+                          maxLines: 5,
+                          overflow: TextOverflow.ellipsis, // new,
+                          textAlign: TextAlign.center,
+                        ),
                       ),
-                      Text('Product quantity: ${data['quantity']}',
-                          style: const TextStyle(
-                              fontSize: 20, fontWeight: FontWeight.bold)),
-                      const SizedBox(
-                        height: 10,
-                      ),
-                      Text('Product price: ${data['price']}',
-                          style: const TextStyle(
-                              fontSize: 20, fontWeight: FontWeight.bold)),
-                      const SizedBox(
-                        height: 10,
-                      ),
-                      Text('Product detail: ${data['detail']}',
-                          style: const TextStyle(
-                              fontSize: 20, fontWeight: FontWeight.bold)),
                       const SizedBox(height: 15),
                       Center(
                         child: InkWell(

@@ -330,7 +330,8 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
                     child: ClipRRect(
                       borderRadius: BorderRadius.circular(100.0),
                       child: CachedNetworkImage(
-                        imageUrl: profileurl ?? '',
+                        imageUrl: profileurl ??
+                            'https://wallpapers.com/images/featured/xbsfzsltjksfompa.jpg',
                         height: 60,
                         width: 60,
                         fit: BoxFit.cover,

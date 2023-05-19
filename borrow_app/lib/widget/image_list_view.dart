@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:ffi';
 import 'dart:math';
 
 import 'package:borrow_app/data/data.dart';
@@ -15,31 +14,38 @@ class ImageListView extends StatefulWidget {
 }
 
 class _ImageListViewState extends State<ImageListView> {
-  final _scrollController = ScrollController();
+  late ScrollController _scrollController;
 
   @override
   void initState() {
     super.initState();
-    _scrollController.addListener(() {
-      if (!_scrollController.position.atEdge) {
-        // implement scroll of list
-        _autoScroll();
-      }
-      // adding to list
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        _autoScroll();
-      });
-    });
+    _scrollController = ScrollController();
+    _scrollController.addListener(_scrollListener);
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose(); // Dispose the ScrollController
+    super.dispose();
+  }
+
+  void _scrollListener() {
+    if (!_scrollController.position.atEdge) {
+      _autoScroll();
+    }
   }
 
   void _autoScroll() {
     final currentScrollPosition = _scrollController.offset;
-    final scrollEndPosition = _scrollController.position.maxScrollExtent;
+    final itemHeight = MediaQuery.of(context).size.height * 0.40;
+    final targetIndex = 2; // Example: Scroll to index 2
+
     scheduleMicrotask(() {
       _scrollController.animateTo(
-          currentScrollPosition == scrollEndPosition ? 0 : scrollEndPosition,
-          duration: const Duration(seconds: 10),
-          curve: Curves.linear);
+        targetIndex * itemHeight,
+        duration: const Duration(seconds: 3),
+        curve: Curves.linear,
+      );
     });
   }
 
@@ -56,7 +62,7 @@ class _ImageListViewState extends State<ImageListView> {
           itemBuilder: (context, index) {
             return CachedNetworkImage(
               imageUrl: products[widget.starIndex + index].productImageUrl,
-              imageBuilder: (con5text, imageProvider) {
+              imageBuilder: (context, imageProvider) {
                 return Container(
                   margin: const EdgeInsets.only(
                     right: 8.0,
@@ -65,11 +71,12 @@ class _ImageListViewState extends State<ImageListView> {
                   ),
                   height: MediaQuery.of(context).size.height * 0.40,
                   decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(20.0),
-                      image: DecorationImage(
-                        image: imageProvider,
-                        fit: BoxFit.cover,
-                      )),
+                    borderRadius: BorderRadius.circular(20.0),
+                    image: DecorationImage(
+                      image: imageProvider,
+                      fit: BoxFit.cover,
+                    ),
+                  ),
                 );
               },
             );

@@ -92,10 +92,10 @@ class IntroScreen extends StatelessWidget {
                       textAlign: TextAlign.center,
                     ),
                     const SizedBox(height: 20),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: buildIndicators(),
-                    )
+                    // Row(
+                    //   mainAxisAlignment: MainAxisAlignment.center,
+                    //   children: buildIndicators(),
+                    // )
                   ],
                 ),
               ),

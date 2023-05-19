@@ -14,45 +14,45 @@ class Product {
   });
 }
 
-class Category {
-  final String categoryName;
-  final String productCont;
-  final String thumbnailImage;
+// class Category {
+//   final String categoryName;
+//   final String productCont;
+//   final String thumbnailImage;
 
-  const Category({
-    required this.categoryName,
-    required this.productCont,
-    required this.thumbnailImage,
-  });
-}
+//   const Category({
+//     required this.categoryName,
+//     required this.productCont,
+//     required this.thumbnailImage,
+//   });
+// }
 
-// list of categories
-final categories = [
-  const Category(
-    categoryName: "T-SHIRT",
-    productCont: "240",
-    thumbnailImage:
-        "https:images.unsplash.com/photo-1509631179647-0177331693ae?ix",
-  ),
-  const Category(
-    categoryName: "T-SHIRT",
-    productCont: "240",
-    thumbnailImage:
-        "https:images.unsplash.com/photo-1509631179647-0177331693ae?ix",
-  ),
-  const Category(
-    categoryName: "T-SHIRT",
-    productCont: "240",
-    thumbnailImage:
-        "https:images.unsplash.com/photo-1509631179647-0177331693ae?ix",
-  ),
-  const Category(
-    categoryName: "T-SHIRT",
-    productCont: "240",
-    thumbnailImage:
-        "https:images.unsplash.com/photo-1509631179647-0177331693ae?ix",
-  ),
-];
+// // list of categories
+// final categories = [
+//   const Category(
+//     categoryName: "T-SHIRT",
+//     productCont: "240",
+//     thumbnailImage:
+//         "https:images.unsplash.com/photo-1509631179647-0177331693ae?ix",
+//   ),
+//   const Category(
+//     categoryName: "T-SHIRT",
+//     productCont: "240",
+//     thumbnailImage:
+//         "https:images.unsplash.com/photo-1509631179647-0177331693ae?ix",
+//   ),
+//   const Category(
+//     categoryName: "T-SHIRT",
+//     productCont: "240",
+//     thumbnailImage:
+//         "https:images.unsplash.com/photo-1509631179647-0177331693ae?ix",
+//   ),
+//   const Category(
+//     categoryName: "T-SHIRT",
+//     productCont: "240",
+//     thumbnailImage:
+//         "https:images.unsplash.com/photo-1509631179647-0177331693ae?ix",
+//   ),
+// ];
 
 // list of products
 final products = [
@@ -95,13 +95,25 @@ final products = [
   const Product(
     productName: "productName",
     productImageUrl:
-        "https://images.unsplash.com/photo-1509631179647-0177331693ae?ix",
-    isLink: false,
+        "https://i.ibb.co/9bj2M0m/465-EA469-3-E23-4-D41-BD49-BFB4-A028-D5-C2.jpg",
+    isLink: true,
   ),
   const Product(
     productName: "productName",
     productImageUrl:
-        "https://images.unsplash.com/photo-1509631179647-0177331693ae?ix",
-    isLink: false,
+        "https://i.ibb.co/9bj2M0m/465-EA469-3-E23-4-D41-BD49-BFB4-A028-D5-C2.jpg",
+    isLink: true,
   ),
+  // const Product(
+  //   productName: "productName",
+  //   productImageUrl:
+  //       "https://images.unsplash.com/photo-1509631179647-0177331693ae?ix",
+  //   isLink: false,
+  // ),
+  // const Product(
+  //   productName: "productName",
+  //   productImageUrl:
+  //       "https://images.unsplash.com/photo-1509631179647-0177331693ae?ix",
+  //   isLink: false,
+  // ),
 ];

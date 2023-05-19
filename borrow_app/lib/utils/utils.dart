@@ -5,7 +5,7 @@ const kTitleStyle = TextStyle(
   fontSize: 28,
   fontWeight: FontWeight.bold,
   letterSpacing: 1.5,
-  color: Colors.white,
+  color: Colors.amber,
 );
 
 const kNormalStyle = TextStyle(

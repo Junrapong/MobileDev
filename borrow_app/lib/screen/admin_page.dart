@@ -346,7 +346,7 @@ class _DetialRequestState extends State<DetialRequest> {
                   itemCount: items.length,
                   itemBuilder: (context, index) {
                     return items == null
-                        ? Text('No data')
+                        ? const Text('No data')
                         : SizedBox(
                             child: Card(
                               elevation: 10,
@@ -398,13 +398,41 @@ class _DetialRequestState extends State<DetialRequest> {
                       child: ElevatedButton(
                         onPressed: () async {
                           Navigator.pop(context);
-                          await deleteData();
+                          showDialog(
+                            context: context,
+                            builder: (context) {
+                              return AlertDialog(
+                                title: const Text('การคืนสินค้า'),
+                                content: const Text('ได้รับสินค้าคืนแล้ว'),
+                                actions: <Widget>[
+                                  TextButton(
+                                    child: const Text('CANCLE'),
+                                    onPressed: () async {
+                                      Navigator.of(context).pop();
+                                    },
+                                  ),
+                                  TextButton(
+                                    child: const Text('OK'),
+                                    onPressed: () async {
+                                      //Navigator.of(context).push(MaterialPageRoute(builder: AdminPage()));
+                                      Navigator.of(context).pop();
+                                      await deleteData();
+                                    },
+                                  ),
+                                ],
+                              );
+                            },
+                          );
+                          return;
                         },
                         style: ElevatedButton.styleFrom(
                           primary: Colors.green,
                           onPrimary: Colors.black,
                         ),
-                        child: const Text('complete'),
+                        child: const Text(
+                          'Delete Data',
+                          style: TextStyle(color: Colors.black),
+                        ),
                       ),
                     ),
                   if (data['status'] == 'pending')
