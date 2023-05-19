@@ -113,7 +113,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
               Text('ID: $studentid'),
               Text('Phone: $phone'),
               Text('School: $school'),
-              Text('Email: ${FirebaseAuth.instance.currentUser?.email ?? ""}'),
+              Text('Email: $email'),
               const SizedBox(
                 height: 10,
               ),
