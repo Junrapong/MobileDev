@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:myapp/Example/myapp.dart';
+import 'package:myapp/Example/List1.dart';
 
 class Listviews extends StatefulWidget {
   const Listviews({Key? key}) : super(key: key);
@@ -30,7 +30,7 @@ class _ListviewsState extends State<Listviews> {
             ListTile(
                 onTap: () {
                   Navigator.pushReplacement(context,
-                      MaterialPageRoute(builder: ((context) => MyApp())));
+                      MaterialPageRoute(builder: ((context) => List1())));
                 },
                 title: Text('${x[1]['name']} ${x[1]['age']} '),
                 subtitle: const Text("The battery is full."),

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:myapp/Example/myapp.dart';
+import 'package:myapp/Example/List1.dart';
+
 
 class Recive extends StatelessWidget {
   Recive({Key? key, required this.data}) : super(key: key);
@@ -19,7 +20,7 @@ class Recive extends StatelessWidget {
           ElevatedButton(
               onPressed: () {
                 Navigator.pushReplacement(
-                    context, MaterialPageRoute(builder: (context) => MyApp()));
+                    context, MaterialPageRoute(builder: (context) => List1()));
               },
               child: Text('back'))
         ],
