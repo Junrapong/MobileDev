@@ -114,18 +114,18 @@ class AuthService {
             await _auth.signInWithCredential(credential);
         User? user = userCredential.user;
 
-        // Get.off(HomeBar);
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => HomeBar()),
-        );
-
         if (user != null) {
           // Step 3
           await updateUserData(user);
 
-          // Retrieve the email from Google
-          String? email = googleUser.email;
+          // Get.off(HomeBar);
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (context) => const HomeBar()),
+          );
+
+          // Retrieve the email from Firebase user
+          String? email = user.email ?? googleUser.email;
 
           // Done
           loading.add(false);
@@ -158,7 +158,7 @@ class AuthService {
     }, SetOptions(merge: true));
   }
 
-  void signOut() {
+  Future<void> signOut() async {
     _auth.signOut();
     _googleSignIn.signOut();
   }

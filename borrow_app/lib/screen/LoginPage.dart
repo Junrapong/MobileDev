@@ -12,9 +12,10 @@ import 'package:get/get.dart';
 import '../model/school.dart';
 import '../widget/signup_controller.dart';
 import '../widget/validator.dart';
+import 'dart:async'; // Import the async package
 
 class Login extends StatefulWidget {
-  const Login({super.key});
+  const Login({Key? key}) : super(key: key);
 
   @override
   State<Login> createState() => _LoginState();
@@ -23,47 +24,72 @@ class Login extends StatefulWidget {
 class _LoginState extends State<Login> {
   final controller = Get.put(SignupController());
   final formKey = GlobalKey<FormState>();
+  StreamSubscription<User?>? _userStreamSubscription;
 
-  void route() {
-    User? user = FirebaseAuth.instance.currentUser;
-    var x = FirebaseFirestore.instance
-        .collection('user')
-        .doc(user!.uid)
-        .get()
-        .then((DocumentSnapshot documentSnapshot) {
-      if (documentSnapshot.exists) {
-        if (documentSnapshot.get('role') == "Admin") {
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(
-              builder: (context) => const AdminPage(),
-            ),
-          );
-        } else {
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(
-              builder: (context) => const HomeBar(),
-            ),
-          );
-        }
-      } else {
-        print('Document does not exist on the database');
+  @override
+  void initState() {
+    super.initState();
+    _userStreamSubscription = authService.user.listen((user) {
+      if (mounted) {
+        // Handle user changes here
       }
     });
+  }
+
+  @override
+  void dispose() {
+    _userStreamSubscription?.cancel();
+    super.dispose();
+  }
+
+  void route() async {
+    User? user = FirebaseAuth.instance.currentUser;
+    if (user != null && mounted) {
+      var x = FirebaseFirestore.instance
+          .collection('user')
+          .doc(user.uid)
+          .get()
+          .then(
+        (DocumentSnapshot documentSnapshot) {
+          if (mounted) {
+            if (documentSnapshot.exists) {
+              if (documentSnapshot.get('role') == "Admin") {
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const AdminPage(),
+                  ),
+                );
+              } else {
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const HomeBar(),
+                  ),
+                );
+              }
+            } else {
+              print('Document does not exist on the database');
+            }
+          }
+        },
+      );
+    }
   }
 
   void signIn() async {
     final email = controller.email.text.trim();
     final password = controller.password.text.trim();
 
-    if (formKey.currentState!.validate()) {
+    if (email.isNotEmpty && password.isNotEmpty) {
       try {
         await FirebaseAuth.instance.signInWithEmailAndPassword(
           email: email,
           password: password,
         );
-        route();
+        if (mounted) {
+          route();
+        }
       } on FirebaseAuthException catch (e) {
         if (e.code == 'user-not-found') {
           print('No user found for that email.');
@@ -90,169 +116,164 @@ class _LoginState extends State<Login> {
     return SafeArea(
       child: Scaffold(
         body: StreamBuilder(
-            stream: authService.user,
-            builder: (context, snapshot) {
-              return SingleChildScrollView(
-                child: Form(
-                  autovalidateMode: AutovalidateMode.always,
-                  child: Container(
-                    padding: const EdgeInsets.all(18.0),
-                    child: Column(
-                      children: [
-                        Image.asset('lib/assets/log/logoScreen.png'),
-                        Form(
-                          key: formKey,
-                          child: Container(
-                            padding: const EdgeInsets.symmetric(vertical: 20.0),
-                            child: Column(
-                              //mainAxisAlignment: MainAxisAlignment.start,
-                              //crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                TextFormField(
-                                  controller: controller.email,
-                                  textInputAction: TextInputAction.next,
-                                  keyboardType: TextInputType.emailAddress,
-                                  decoration: const InputDecoration(
-                                    prefixIcon: Icon(FontAwesomeIcons.envelope),
-                                    label: Text('Email'),
-                                    hintText: 'Email',
-                                    border: OutlineInputBorder(),
-                                  ),
-                                  autovalidateMode:
-                                      AutovalidateMode.onUserInteraction,
-                                  validator: validatorEmail,
+          stream: authService.user,
+          builder: (context, snapshot) {
+            return SingleChildScrollView(
+              child: Form(
+                autovalidateMode: AutovalidateMode.always,
+                child: Container(
+                  padding: const EdgeInsets.all(18.0),
+                  child: Column(
+                    children: [
+                      Image.asset('lib/assets/log/logoScreen.png'),
+                      Form(
+                        key: formKey,
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(vertical: 20.0),
+                          child: Column(
+                            children: [
+                              TextFormField(
+                                controller: controller.email,
+                                textInputAction: TextInputAction.next,
+                                keyboardType: TextInputType.emailAddress,
+                                decoration: const InputDecoration(
+                                  prefixIcon: Icon(FontAwesomeIcons.envelope),
+                                  label: Text('Email'),
+                                  hintText: 'Email',
+                                  border: OutlineInputBorder(),
                                 ),
-                                const SizedBox(height: 10),
-                                TextFormField(
-                                  obscureText: _obscureText,
-                                  controller: controller.password,
-                                  textInputAction: TextInputAction.done,
-                                  decoration: InputDecoration(
-                                    prefixIcon:
-                                        const Icon(FontAwesomeIcons.lock),
-                                    label: const Text('Password'),
-                                    hintText: 'Password',
-                                    border: const OutlineInputBorder(),
-                                    suffixIcon: IconButton(
-                                      icon: Icon(_obscureText
-                                          ? FontAwesomeIcons.eye
-                                          : FontAwesomeIcons.eyeSlash),
-                                      onPressed: () {
-                                        setState(
-                                          () {
-                                            _obscureText = !_obscureText;
-                                          },
-                                        );
-                                      },
-                                    ),
-                                  ),
-                                  // autovalidateMode:
-                                  //     AutovalidateMode.onUserInteraction,
-                                  // validator: passwordValidator,
-                                ),
-                                const SizedBox(height: 5),
-                                Align(
-                                  alignment: Alignment.centerRight,
-                                  child: TextButton(
+                                autovalidateMode:
+                                    AutovalidateMode.onUserInteraction,
+                                validator: validatorEmail,
+                              ),
+                              const SizedBox(height: 10),
+                              TextFormField(
+                                obscureText: _obscureText,
+                                controller: controller.password,
+                                textInputAction: TextInputAction.done,
+                                decoration: InputDecoration(
+                                  prefixIcon: const Icon(FontAwesomeIcons.lock),
+                                  label: const Text('Password'),
+                                  hintText: 'Password',
+                                  border: const OutlineInputBorder(),
+                                  suffixIcon: IconButton(
+                                    icon: Icon(_obscureText
+                                        ? FontAwesomeIcons.eye
+                                        : FontAwesomeIcons.eyeSlash),
                                     onPressed: () {
+                                      setState(
+                                        () {
+                                          _obscureText = !_obscureText;
+                                        },
+                                      );
+                                    },
+                                  ),
+                                ),
+                              ),
+                              const SizedBox(height: 5),
+                              Align(
+                                alignment: Alignment.centerRight,
+                                child: TextButton(
+                                  onPressed: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) =>
+                                            const ForgotPasswordPage(),
+                                      ),
+                                    );
+                                    clearText();
+                                  },
+                                  child: const Text('Forgot Password?'),
+                                ),
+                              ),
+                              SizedBox(
+                                width: double.infinity,
+                                child: ElevatedButton(
+                                  style: ElevatedButton.styleFrom(
+                                      backgroundColor: Colors.black),
+                                  onPressed: () {
+                                    final isValidForm =
+                                        formKey.currentState!.validate();
+                                    if (isValidForm) {
+                                      signIn();
+                                      clearText();
+                                    }
+                                  },
+                                  child: Text(
+                                    'Login'.toUpperCase(),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                      Column(
+                        children: [
+                          const Text('OR'),
+                          const SizedBox(height: 5),
+                          SizedBox(
+                            width: double.infinity,
+                            child: OutlinedButton.icon(
+                              style: OutlinedButton.styleFrom(
+                                foregroundColor: Colors.black,
+                                shadowColor: Colors.black,
+                                side: const BorderSide(
+                                    color: Colors.black, width: 2),
+                              ),
+                              icon:
+                                  //Icon(FontAwesomeIcons.google),
+                                  const Image(
+                                image: AssetImage(
+                                    'lib/assets/log/google_logo.png'),
+                                width: 20,
+                              ),
+                              label: const Text('Sign-In with Google'),
+                              onPressed: () {
+                                authService.googleSignIn(context);
+                              },
+                            ),
+                          ),
+                          const SizedBox(height: 8),
+                          RichText(
+                            text: TextSpan(
+                              text: "Don't have an Account? ",
+                              style: const TextStyle(
+                                color: Colors.black,
+                                fontWeight: FontWeight.w500,
+                              ),
+                              children: <TextSpan>[
+                                TextSpan(
+                                  text: 'Sign up'.toUpperCase(),
+                                  style: const TextStyle(
+                                    color: Colors.cyan,
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                  recognizer: TapGestureRecognizer()
+                                    ..onTap = () {
+                                      clearText();
                                       Navigator.push(
                                         context,
                                         MaterialPageRoute(
                                           builder: (context) =>
-                                              const ForgotPasswordPage(),
+                                              const Register(),
                                         ),
                                       );
-                                      clearText();
                                     },
-                                    child: const Text('Forgot Password?'),
-                                  ),
-                                ),
-                                SizedBox(
-                                  width: double.infinity,
-                                  child: ElevatedButton(
-                                    style: ElevatedButton.styleFrom(
-                                        backgroundColor: Colors.black),
-                                    onPressed: () {
-                                      final isValidForm =
-                                          formKey.currentState!.validate();
-                                      if (isValidForm) {
-                                        signIn();
-                                        clearText();
-                                      }
-                                    },
-                                    child: Text(
-                                      'Login'.toUpperCase(),
-                                    ),
-                                  ),
                                 ),
                               ],
                             ),
                           ),
-                        ),
-                        Column(
-                          children: [
-                            const Text('OR'),
-                            const SizedBox(height: 5),
-                            SizedBox(
-                              width: double.infinity,
-                              child: OutlinedButton.icon(
-                                style: OutlinedButton.styleFrom(
-                                  foregroundColor: Colors.black,
-                                  shadowColor: Colors.black,
-                                  side: const BorderSide(
-                                      color: Colors.black, width: 2),
-                                ),
-                                icon:
-                                    //Icon(FontAwesomeIcons.google),
-                                    const Image(
-                                  image: AssetImage(
-                                      'lib/assets/log/google_logo.png'),
-                                  width: 20,
-                                ),
-                                label: const Text('Sign-In with Google'),
-                                onPressed: () {
-                                  authService.googleSignIn(context);
-                                },
-                              ),
-                            ),
-                            const SizedBox(height: 8),
-                            RichText(
-                              text: TextSpan(
-                                text: "Don't have an Account? ",
-                                style: const TextStyle(
-                                  color: Colors.black,
-                                  fontWeight: FontWeight.w500,
-                                ),
-                                children: <TextSpan>[
-                                  TextSpan(
-                                    text: 'Sign up'.toUpperCase(),
-                                    style: const TextStyle(
-                                      color: Colors.cyan,
-                                      fontWeight: FontWeight.w500,
-                                    ),
-                                    recognizer: TapGestureRecognizer()
-                                      ..onTap = () {
-                                        clearText();
-                                        Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                            builder: (context) =>
-                                                const Register(),
-                                          ),
-                                        );
-                                      },
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
+                        ],
+                      ),
+                    ],
                   ),
                 ),
-              );
-            }),
+              ),
+            );
+          },
+        ),
       ),
     );
   }

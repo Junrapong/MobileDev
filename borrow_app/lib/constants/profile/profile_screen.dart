@@ -87,107 +87,112 @@ class _ProfileScreenState extends State<ProfileScreen> {
               icon: Icon(isDark ? LineAwesomeIcons.sun : LineAwesomeIcons.moon))
         ],
       ),
-      body: SingleChildScrollView(
-        child: Container(
-          padding: const EdgeInsets.all(8.0),
-          child: Column(
-            children: [
-              SizedBox(
-                width: 120,
-                height: 120,
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(100.0),
-                  child: CachedNetworkImage(
-                    imageUrl: profileurl ??
-                        "https://wallpapers.com/images/featured/xbsfzsltjksfompa.jpg",
-                    height: 60,
-                    width: 60,
-                    fit: BoxFit.cover,
-                  ),
+      body: StreamBuilder(
+          stream: authService.user,
+          builder: (context, snapshot) {
+            return SingleChildScrollView(
+              child: Container(
+                padding: const EdgeInsets.all(8.0),
+                child: Column(
+                  children: [
+                    SizedBox(
+                      width: 120,
+                      height: 120,
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(100.0),
+                        child: CachedNetworkImage(
+                          imageUrl: profileurl ??
+                              "https://wallpapers.com/images/featured/xbsfzsltjksfompa.jpg",
+                          height: 60,
+                          width: 60,
+                          fit: BoxFit.cover,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(
+                      height: 10,
+                    ),
+                    Text('Name: $name'),
+                    Text('ID: $studentid'),
+                    Text('Phone: $phone'),
+                    Text('School: $school'),
+                    Text('Email: $email'),
+                    const SizedBox(
+                      height: 10,
+                    ),
+                    SizedBox(
+                        width: 200,
+                        child: ElevatedButton(
+                          onPressed: () {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => UpdateProfileScreen(
+                                          imgurl: profileurl ?? '',
+                                        )));
+                          },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.black,
+                            side: BorderSide.none,
+                            shape: const StadiumBorder(),
+                          ),
+                          child: const Text(
+                            tEditProfile,
+                            style: TextStyle(color: Colors.amber),
+                          ),
+                        )),
+                    const SizedBox(
+                      height: 30,
+                    ),
+                    const Divider(),
+                    const SizedBox(height: 10),
+                    ProfileMenuWidget(
+                        title: "History",
+                        icon: LineAwesomeIcons.history,
+                        onPress: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => const History()),
+                          );
+                        }),
+                    ProfileMenuWidget(
+                        title: "FAQ",
+                        icon: LineAwesomeIcons.exclamation_circle,
+                        onPress: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => const FAQ()),
+                          );
+                        }),
+                    SizedBox(
+                      width: double.infinity,
+                      child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.black,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(30),
+                          ),
+                        ),
+                        onPressed: () {
+                          //setState(() {});
+                          authService.signOut();
+                          Navigator.pushAndRemoveUntil(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => const IntroScreen()),
+                            ((route) => false),
+                          );
+                        },
+                        child: Text('Logout'.toUpperCase()),
+                      ),
+                    ),
+                  ],
                 ),
               ),
-              const SizedBox(
-                height: 10,
-              ),
-              Text('Name: $name'),
-              Text('ID: $studentid'),
-              Text('Phone: $phone'),
-              Text('School: $school'),
-              Text('Email: $email'),
-              const SizedBox(
-                height: 10,
-              ),
-              SizedBox(
-                  width: 200,
-                  child: ElevatedButton(
-                    onPressed: () {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => UpdateProfileScreen(
-                                    imgurl: profileurl ?? '',
-                                  )));
-                    },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.black,
-                      side: BorderSide.none,
-                      shape: const StadiumBorder(),
-                    ),
-                    child: const Text(
-                      tEditProfile,
-                      style: TextStyle(color: Colors.amber),
-                    ),
-                  )),
-              const SizedBox(
-                height: 30,
-              ),
-              const Divider(),
-              const SizedBox(height: 10),
-              ProfileMenuWidget(
-                  title: "History",
-                  icon: LineAwesomeIcons.history,
-                  onPress: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => const History()),
-                    );
-                  }),
-              ProfileMenuWidget(
-                  title: "FAQ",
-                  icon: LineAwesomeIcons.exclamation_circle,
-                  onPress: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => const FAQ()),
-                    );
-                  }),
-              SizedBox(
-                width: double.infinity,
-                child: ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.black,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(30),
-                    ),
-                  ),
-                  onPressed: () {
-                    setState(() {
-                      AuthService().signOut();
-                      Navigator.pushAndRemoveUntil(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => const IntroScreen()),
-                        ((route) => false),
-                      );
-                    });
-                  },
-                  child: Text('Logout'.toUpperCase()),
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
+            );
+          }),
     );
   }
 }
