@@ -2,6 +2,7 @@ import 'package:borrow_app/screen/history.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:intl/intl.dart';
 
 class DatePickerPage extends StatefulWidget {
@@ -58,6 +59,7 @@ class _DatePickerPageState extends State<DatePickerPage> {
   //   return querySnapshot;
   // }
   final FirebaseAuth _auth = FirebaseAuth.instance;
+
   Future<void> sendCollectionToAnotherCollection(
       String start, String end, int diff) async {
     final User? user = _auth.currentUser;
@@ -70,110 +72,48 @@ class _DatePickerPageState extends State<DatePickerPage> {
         .collection('Pending')
         .get();
 
+    // Get the email from the user's document
+    DocumentSnapshot userSnapshot =
+        await FirebaseFirestore.instance.collection('user').doc(_uid).get();
+    String email = userSnapshot['Email'];
+
     snapshot.docs.forEach(
       (DocumentSnapshot doc) async {
         Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
 
-        //print(data);
-        // สร้างเอกสารใน collection "UserRequest" และเก็บข้อมูลภายในเอกสารด้วย .set()
-
+        // Set the borrowed item in the "UserRequest" collection
         await FirebaseFirestore.instance
             .collection('UserRequest')
             .doc(FirebaseAuth.instance.currentUser!.uid)
             .collection('Item')
             .doc(data['name'])
-            .set(
-          {
-            'name': data['name'],
-            'image': data['image'],
-          },
-        );
+            .set({
+          'name': data['name'],
+          'image': data['image'],
+        });
+
+        // Set the user's request details in the "UserRequest" collection
         await FirebaseFirestore.instance
             .collection('UserRequest')
             .doc(FirebaseAuth.instance.currentUser!.uid)
-            .set(
-          {
-            'email': FirebaseAuth.instance.currentUser!.email,
-            'start': start,
-            'end': end,
-            'diff': diff,
-            'status': 'pending',
+            .set({
+          'email': email,
+          'start': start,
+          'end': end,
+          'diff': diff,
+          'status': 'pending',
+        });
 
-          },
-        );
+        // Delete the item from the "Pending" collection in the "user" collection
         FirebaseFirestore.instance
             .collection('user')
             .doc(FirebaseAuth.instance.currentUser!.uid)
             .collection('Pending')
             .doc(data['name'])
             .delete();
-        // await FirebaseFirestore.instance
-        //     .collection('UserRequest')
-        //     .doc(FirebaseAuth.instance.currentUser!.uid)
-        //     .update({'status': 'ready'});
       },
     );
   }
-
-  // Future addBorrow(
-  //   String start,
-  //   String end,
-  //   String productName,
-  //   String productImage,fdcrrrrrrrrcccccccccccccccrr
-  //   int day,
-  // ) async {
-  //   final User? user = _auth.currentUser;
-  //   final _uid = user!.uid;
-  //   await FirebaseFirestore.instance
-  //       .collection('user')
-  //       .doc(_uid)
-  //       .collection('Pending')
-  //       .doc(productName)
-  //       .set({
-  //     'date_start': start,
-  //     'date_end': end,
-  //     'name': productName,
-  //     'image': productImage,
-  //     'day': day,
-  //     'status': 'pending',
-  //   });
-  // }
-
-  // Future addRequestAdmin(String productName, String productImage) async {
-  //   final User? user = _auth.currentUser;
-  //   final _uid = user!.uid;
-  //   final _email = user.email;
-  //   await FirebaseFirestore.instance
-  //       .collection('UserRequest')
-  //       .doc(productName)
-  //       .set({
-  //     // 'date_start': start,
-  //     // 'date_end': end,
-  //     'name': productName,
-  //     'image': productImage,
-  //     // 'day': day,
-  //     'userId': _uid,
-  //     'useremail': _email,
-  //   });
-  //   //sendCollectionToAnotherCollection();
-  // }
-
-  // Future updateData() async {
-  //   final productsQuery = FirebaseFirestore.instance
-  //       .collection('products')
-  //       .where('products_name', isEqualTo: widget.productName);
-
-  //   final querySnapshot = await productsQuery.get();
-  //   final documentSnapshot = querySnapshot.docs.first;
-  //   final documentId = documentSnapshot.id;
-
-  //   final documentReference =
-  //       FirebaseFirestore.instance.collection('products').doc(documentId);
-
-  //   documentReference.update({
-  //     'status': 'pending',
-  //   });
-  // }
 
   @override
   void initState() {
