@@ -88,7 +88,7 @@ class _HistoryState extends State<History> {
                     ),
                     child: Text(data?['status'] ?? 'Wait for info'),
                   ),
-                if (data?['status'] == 'complete')
+                if (data?['status'] == 'approve')
                   ElevatedButton(
                     onPressed: () {},
                     style: ElevatedButton.styleFrom(

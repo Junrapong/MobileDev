@@ -66,7 +66,6 @@ class _AdminPageState extends State<AdminPage> {
   @override
   void initState() {
     getData();
-
     super.initState();
   }
 
@@ -208,15 +207,26 @@ class _AdminPageState extends State<AdminPage> {
                 Navigator.pop(context);
               },
             ),
-            ListTile(
-              title: const Text('Borrowing'),
-              onTap: () {
-                // Update the state of the app
-                // ...
-                // Then close the drawer
-                Navigator.pop(context);
-              },
-            ),
+            // ListTile(
+            //   title: const Text('Borrowing'),
+            //   onTap: () {
+            //     // Update the state of the app
+            //     // ...
+            //     // Then close the drawer
+            //     Navigator.pop(context);
+            //   },
+            // ),
+            // ListTile(
+            //   title: const Text('History'),
+            //   onTap: () {
+            //     Navigator.push(
+            //       context,
+            //       MaterialPageRoute(
+            //         builder: (context) => const HistoryPage(),
+            //       ),
+            //     );
+            //   },
+            // ),
             const Expanded(
                 child:
                     SizedBox()), // Added Expanded widget to fill the remaining space
@@ -240,9 +250,10 @@ class _AdminPageState extends State<AdminPage> {
   }
 }
 
+//==============================================================================
 class DetialRequest extends StatefulWidget {
   final String id;
-  DetialRequest({super.key, required this.id});
+  const DetialRequest({super.key, required this.id});
 
   @override
   State<DetialRequest> createState() => _DetialRequestState();
@@ -327,9 +338,9 @@ class _DetialRequestState extends State<DetialRequest> {
       body: StreamBuilder<DocumentSnapshot<Map<String, dynamic>>>(
         stream: getFirestoreCollection().doc(widget.id).snapshots(),
         builder: (context, snapshot) {
-          // if (!snapshot.hasData) {
-          //   return const CircularProgressIndicator();
-          // }
+          if (!snapshot.hasData) {
+            return const CircularProgressIndicator();
+          }
           if (snapshot.hasError) {
             return const Text("Connection error");
           }
@@ -386,53 +397,10 @@ class _DetialRequestState extends State<DetialRequest> {
                           await FirebaseFirestore.instance
                               .collection('UserRequest')
                               .doc(widget.id)
-                              .update({'status': 'complete'});
+                              .update({'status': 'approve'});
                         },
-                        style: ElevatedButton.styleFrom(primary: Colors.green),
                         child: const Text('Approve'),
-                      ),
-                    ),
-                  if (data['status'] == 'complete')
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: ElevatedButton(
-                        onPressed: () async {
-                          Navigator.pop(context);
-                          showDialog(
-                            context: context,
-                            builder: (context) {
-                              return AlertDialog(
-                                title: const Text('การคืนสินค้า'),
-                                content: const Text('ได้รับสินค้าคืนแล้ว'),
-                                actions: <Widget>[
-                                  TextButton(
-                                    child: const Text('CANCLE'),
-                                    onPressed: () async {
-                                      Navigator.of(context).pop();
-                                    },
-                                  ),
-                                  TextButton(
-                                    child: const Text('OK'),
-                                    onPressed: () async {
-                                      //Navigator.of(context).push(MaterialPageRoute(builder: AdminPage()));
-                                      Navigator.of(context).pop();
-                                      await deleteData();
-                                    },
-                                  ),
-                                ],
-                              );
-                            },
-                          );
-                          return;
-                        },
-                        style: ElevatedButton.styleFrom(
-                          primary: Colors.green,
-                          onPrimary: Colors.black,
-                        ),
-                        child: const Text(
-                          'Delete Data',
-                          style: TextStyle(color: Colors.black),
-                        ),
+                        style: ElevatedButton.styleFrom(primary: Colors.green),
                       ),
                     ),
                   if (data['status'] == 'pending')
@@ -449,15 +417,74 @@ class _DetialRequestState extends State<DetialRequest> {
                         child: const Text('Rejected'),
                       ),
                     ),
+                  if (data['status'] == 'approve')
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Column(
+                        children: [
+                          const Text(
+                            'Approving Completed',
+                            style: TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.green),
+                          ),
+                          const SizedBox(height: 10.0),
+                          ElevatedButton(
+                            onPressed: () async {
+                              Navigator.pop(context);
+                              showDialog(
+                                context: context,
+                                builder: (context) {
+                                  return AlertDialog(
+                                    title: const Text('การคืนสินค้า'),
+                                    content: const Text('ได้รับสินค้าคืนแล้ว'),
+                                    actions: <Widget>[
+                                      TextButton(
+                                        child: const Text('CANCLE'),
+                                        onPressed: () async {
+                                          Navigator.of(context).pop();
+                                        },
+                                      ),
+                                      TextButton(
+                                        child: const Text('OK'),
+                                        onPressed: () async {
+                                          //Navigator.of(context).push(MaterialPageRoute(builder: AdminPage()));
+                                          Navigator.of(context).pop();
+                                          await deleteData();
+                                        },
+                                      ),
+                                    ],
+                                  );
+                                },
+                              );
+                              return;
+                            },
+                            style: ElevatedButton.styleFrom(
+                              primary: Colors.green,
+                              onPrimary: Colors.black,
+                            ),
+                            child: const Text(
+                              'Delete Data',
+                              style: TextStyle(color: Colors.black),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
                   if (data['status'] == 'reject')
                     Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: Column(
                         children: [
                           const Text(
-                            'Complete',
-                            style: TextStyle(fontSize: 16, color: Colors.green),
+                            'Rejecting Completed ',
+                            style: TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.red),
                           ),
+                          const SizedBox(height: 10.0),
                           ElevatedButton(
                             onPressed: () async {
                               Navigator.pop(context);
@@ -483,54 +510,135 @@ class _DetialRequestState extends State<DetialRequest> {
   }
 }
 
-class Borrowing extends StatefulWidget {
-  const Borrowing({super.key});
+// class Borrowing extends StatefulWidget {
+//   const Borrowing({super.key});
 
-  @override
-  State<Borrowing> createState() => _BorrowingState();
-}
+//   @override
+//   State<Borrowing> createState() => _BorrowingState();
+// }
 
-class _BorrowingState extends State<Borrowing> {
-  Future<void> getItem(String id) async {
-    //final uid = FirebaseFirestore.instance.collection('UserRequest').id;
-    try {
-      final QuerySnapshot mainCollectionSnapshot =
-          await FirebaseFirestore.instance.collectionGroup('UserRequest').get();
+// class _BorrowingState extends State<Borrowing> {
+//   Future<void> getItem(String id) async {
+//     //final uid = FirebaseFirestore.instance.collection('UserRequest').id;
+//     try {
+//       final QuerySnapshot mainCollectionSnapshot =
+//           await FirebaseFirestore.instance.collectionGroup('UserRequest').get();
 
-      final QuerySnapshot subCollectionSnapshot = await FirebaseFirestore
-          .instance
-          .collection('UserRequest/${id}/Item')
-          .get();
+//       final QuerySnapshot subCollectionSnapshot = await FirebaseFirestore
+//           .instance
+//           .collection('UserRequest/${id}/Item')
+//           .get();
 
-      for (QueryDocumentSnapshot subDocument in subCollectionSnapshot.docs) {
-        items.add(subDocument);
-        print('Sub-Collection Doc ID: ${subDocument.id}');
-        print('Sub-Collection Doc Data: ${subDocument.data()}');
-      }
+//       for (QueryDocumentSnapshot subDocument in subCollectionSnapshot.docs) {
+//         items.add(subDocument);
+//         print('Sub-Collection Doc ID: ${subDocument.id}');
+//         print('Sub-Collection Doc Data: ${subDocument.data()}');
+//       }
 
-      setState(() {}); // Trigger rebuild after data retrieval
+//       setState(() {}); // Trigger rebuild after data retrieval
 
-    } catch (e) {
-      print('Error: $e');
-    }
-  }
+//     } catch (e) {
+//       print('Error: $e');
+//     }
+//   }
 
-  List<QueryDocumentSnapshot> items = [];
-  String? name;
-  String? email;
+//   List<QueryDocumentSnapshot> items = [];
+//   String? name;
+//   String? email;
 
-  @override
-  void initState() {
-    super.initState();
-  }
+//   @override
+//   void initState() {
+//     super.initState();
+//   }
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Title'),
-      ),
-      body: Container(),
-    );
-  }
-}
+//   @override
+//   Widget build(BuildContext context) {
+//     return Scaffold(
+//       appBar: AppBar(
+//         title: const Text('Title'),
+//       ),
+//       body: Container(),
+//     );
+//   }
+// }
+
+//==============================================================================
+// Future<void> createHistoryCollection() async {
+//   try {
+//     // ดึงข้อมูลจาก collection UserRequest ที่ถูก reject หรือ approve ทั้งหมด
+//     final QuerySnapshot userRequestsSnapshot = await FirebaseFirestore.instance
+//         .collection('UserRequest')
+//         .where('status', whereIn: ['reject', 'approve']).get();
+
+//     // สร้าง collection ใหม่ชื่อ history
+//     final CollectionReference historyCollection =
+//         FirebaseFirestore.instance.collection('history');
+
+//     // เพิ่มข้อมูลจาก userRequestsSnapshot เข้าคอลเลกชัน history
+//     userRequestsSnapshot.docs.forEach((DocumentSnapshot document) {
+//       historyCollection.add(
+//         document.data(),
+//       );
+//     });
+
+//     print('History collection created successfully.');
+//   } catch (e) {
+//     print('Error: $e');
+//   }
+// }
+
+// class HistoryPage extends StatefulWidget {
+//   const HistoryPage({Key? key}) : super(key: key);
+
+//   @override
+//   State<HistoryPage> createState() => _HistoryPageState();
+// }
+
+// class _HistoryPageState extends State<HistoryPage> {
+//   @override
+//   void initState() {
+//     createHistoryCollection();
+//     super.initState();
+//   }
+
+//   @override
+//   Widget build(BuildContext context) {
+//     return Scaffold(
+//       appBar: AppBar(
+//         title: const Text('History'),
+//       ),
+//       body: StreamBuilder<QuerySnapshot>(
+//         stream: FirebaseFirestore.instance.collection('history').snapshots(),
+//         builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+//           if (!snapshot.hasData) {
+//             return const Center(child: CircularProgressIndicator());
+//           }
+//           if (snapshot.connectionState == ConnectionState.waiting) {
+//             return const Text("Loading. . . ");
+//           }
+//           if (snapshot.hasError) {
+//             return const Text("Connection error");
+//           }
+
+//           List<QueryDocumentSnapshot> documents = snapshot.data!.docs;
+
+//           return ListView.builder(
+//             itemCount: documents.length,
+//             itemBuilder: (context, index) {
+//               final DocumentSnapshot document = documents[index];
+
+//               // Map<String, dynamic> data =
+//               //     snapshot.data!.docs[index].data() as Map<String, dynamic>;
+
+//               return ListTile(
+//                 title: Text(document['email']),
+//                 subtitle: Text('Borrowed for: ${document['diff']} days'),
+//                 trailing: Text('Status: ${document['status']}'),
+//               );
+//             },
+//           );
+//         },
+//       ),
+//     );
+//   }
+// }

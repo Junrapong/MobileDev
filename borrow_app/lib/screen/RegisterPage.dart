@@ -262,7 +262,6 @@ class _RegisterState extends State<Register> {
                                       await register();
 
                                       //addData();
-
                                       clearText();
                                     }
                                   },
